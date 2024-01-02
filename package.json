@@ -1,0 +1,13 @@
+{
+  "name": "pictionary",
+  "version": "1.0.0",
+  "description": "Pictionary over the web",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Landry Geiger",
+  "license": "ISC",
+  "workspaces": [
+    "./web-app"
+  ]
+}
