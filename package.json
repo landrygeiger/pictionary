@@ -1,13 +1,20 @@
 {
   "name": "pictionary",
+  "private": true,
   "version": "1.0.0",
   "description": "Pictionary over the web",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc --build --verbose tsconfig.build.json && cd web-app && ng build"
   },
   "author": "Landry Geiger",
   "license": "ISC",
   "workspaces": [
-    "./web-app"
-  ]
+    "web-app",
+    "shared"
+  ],
+  "devDependencies": {
+    "@tsconfig/recommended": "^1.0.3",
+    "typescript": "^5.2.2"
+  }
 }

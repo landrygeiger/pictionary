@@ -5,6 +5,7 @@ import {
   HostListener,
   ViewChild,
 } from '@angular/core';
+import { Point } from '@pictionary/shared';
 
 @Component({
   selector: 'app-canvas',
@@ -19,11 +20,8 @@ export class CanvasComponent implements AfterViewInit {
 
   context!: CanvasRenderingContext2D | null;
 
-  prevX = 0;
-  prevY = 0;
-
-  currX = 0;
-  currY = 0;
+  prevPos: Point = { x: 0, y: 0 };
+  currPos: Point = { x: 0, y: 0 };
 
   @HostListener('mousedown') onMouseEnter() {
     this.canvas.nativeElement.style.backgroundColor = 'red';
