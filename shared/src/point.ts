@@ -1,6 +1,6 @@
 export type Point = { x: number; y: number };
 
-export const mousePosFromEvent = (
+export const relativeMousePosFromEvent = (
   event: { clientX: number; clientY: number },
   element: HTMLElement
 ): Point => ({

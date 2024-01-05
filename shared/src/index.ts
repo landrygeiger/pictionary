@@ -1,1 +1,1 @@
-export { type Point, mousePosFromEvent } from "./point";
+export { type Point, relativeMousePosFromEvent } from "./point";

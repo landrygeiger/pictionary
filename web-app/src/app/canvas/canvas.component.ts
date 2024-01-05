@@ -5,7 +5,7 @@ import {
   Input,
   ViewChild,
 } from '@angular/core';
-import { Point, mousePosFromEvent } from '@pictionary/shared';
+import { Point, relativeMousePosFromEvent } from '@pictionary/shared';
 import { fromEvent, pairwise, switchMap, takeUntil } from 'rxjs';
 
 @Component({
@@ -41,8 +41,8 @@ export class CanvasComponent implements AfterViewInit {
         )
       )
       .subscribe((res: [MouseEvent, MouseEvent]) => {
-        const prevPos = mousePosFromEvent(res[0], canvasEl);
-        const currentPos = mousePosFromEvent(res[1], canvasEl);
+        const prevPos = relativeMousePosFromEvent(res[0], canvasEl);
+        const currentPos = relativeMousePosFromEvent(res[1], canvasEl);
         this.draw(prevPos, currentPos);
       });
   }
