@@ -3,9 +3,18 @@ import {
   Component,
   ElementRef,
   HostListener,
+  Input,
   ViewChild,
 } from '@angular/core';
-import { Point } from '@pictionary/shared';
+import { Point, mousePosFromEvent } from '@pictionary/shared';
+import {
+  concatMap,
+  fromEvent,
+  pairwise,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs';
 
 @Component({
   selector: 'app-canvas',
@@ -15,23 +24,43 @@ import { Point } from '@pictionary/shared';
   styleUrl: './canvas.component.css',
 })
 export class CanvasComponent implements AfterViewInit {
+  @Input() width = 600;
+  @Input() height = 400;
+
   @ViewChild('canvasRef')
   canvas!: ElementRef<HTMLCanvasElement>;
+  context: any;
 
-  context!: CanvasRenderingContext2D | null;
+  public ngAfterViewInit() {
+    const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
+    this.context = canvasEl.getContext('2d');
 
-  prevPos: Point = { x: 0, y: 0 };
-  currPos: Point = { x: 0, y: 0 };
+    this.context.lineWidth = 3;
+    this.context.lineCap = 'round';
+    this.context.strokeStyle = '#000';
 
-  @HostListener('mousedown') onMouseEnter() {
-    this.canvas.nativeElement.style.backgroundColor = 'red';
+    fromEvent<MouseEvent>(canvasEl, 'mousedown')
+      .pipe(
+        switchMap(() =>
+          fromEvent<MouseEvent>(canvasEl, 'mousemove').pipe(
+            takeUntil(fromEvent<MouseEvent>(canvasEl, 'mouseup')),
+            pairwise()
+          )
+        )
+      )
+      .subscribe((res: [MouseEvent, MouseEvent]) => {
+        const prevPos = mousePosFromEvent(res[0], canvasEl);
+        const currentPos = mousePosFromEvent(res[1], canvasEl);
+        this.draw(prevPos, currentPos);
+      });
   }
 
-  @HostListener('mouseup') onMouseLeave() {
-    this.canvas.nativeElement.style.backgroundColor = '';
-  }
+  private draw(prevPos: Point, currentPos: Point) {
+    if (!this.context) return;
 
-  ngAfterViewInit(): void {
-    this.context = this.canvas.nativeElement.getContext('2d');
+    this.context.beginPath();
+    this.context.moveTo(prevPos.x, prevPos.y);
+    this.context.lineTo(currentPos.x, currentPos.y);
+    this.context.stroke();
   }
 }

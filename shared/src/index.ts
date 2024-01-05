@@ -1,1 +1,1 @@
-export { type Point, eggmoney } from "./point";
+export { type Point, mousePosFromEvent } from "./point";
