@@ -2,19 +2,11 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  HostListener,
   Input,
   ViewChild,
 } from '@angular/core';
 import { Point, mousePosFromEvent } from '@pictionary/shared';
-import {
-  concatMap,
-  fromEvent,
-  pairwise,
-  switchMap,
-  takeUntil,
-  tap,
-} from 'rxjs';
+import { fromEvent, pairwise, switchMap, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-canvas',
