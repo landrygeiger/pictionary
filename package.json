@@ -11,7 +11,8 @@
   "license": "ISC",
   "workspaces": [
     "web-app",
-    "shared"
+    "shared",
+    "server"
   ],
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.3",
