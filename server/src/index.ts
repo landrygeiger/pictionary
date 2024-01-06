@@ -1,14 +1,21 @@
-import express, { Express, Request, Response } from "express";
+import express, {
+  Express,
+  Request,
+  Response,
+  static as static_,
+} from "express";
 import dotenv from "dotenv";
+import path from "path";
 
 dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
-app.get("/", (_: Request, res: Response) => {
-  res.send("Welcome to the server.");
-});
+app.use(
+  "/",
+  express.static(path.join(__dirname, "../../web-app/dist/web-app/browser/"))
+);
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}.`);
