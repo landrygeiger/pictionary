@@ -1,13 +1,11 @@
 import express, { Express } from "express";
-import dotenv from "dotenv";
 import path from "path";
 import http from "http";
 import { Server } from "socket.io";
-
-dotenv.config();
+import { config } from "@pictionary/shared";
 
 const app: Express = express();
-const port = process.env.PORT || 3000;
+const port = config.serverPort || 3000;
 
 const server = http.createServer(app);
 
