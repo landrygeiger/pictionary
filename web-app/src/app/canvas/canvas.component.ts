@@ -5,7 +5,11 @@ import {
   Input,
   ViewChild,
 } from '@angular/core';
-import { Point, relativeMousePosFromEvent } from '@pictionary/shared';
+import {
+  CanvasConfig,
+  Point,
+  relativeMousePosFromEvent,
+} from '@pictionary/shared';
 import { fromEvent, pairwise, switchMap, takeUntil } from 'rxjs';
 import { SocketService } from '../socket.service';
 
@@ -22,7 +26,9 @@ export class CanvasComponent implements AfterViewInit {
 
   @ViewChild('canvasRef')
   canvas!: ElementRef<HTMLCanvasElement>;
-  context: any;
+  context!: CanvasRenderingContext2D | null;
+
+  config: CanvasConfig = { color: '#000', lineWidth: 3 };
 
   constructor(public socketService: SocketService) {}
 
@@ -33,10 +39,6 @@ export class CanvasComponent implements AfterViewInit {
     this.socketService.drawEventSubject.subscribe((drawEventParams) =>
       this.draw(drawEventParams.start, drawEventParams.end)
     );
-
-    this.context.lineWidth = 3;
-    this.context.lineCap = 'round';
-    this.context.strokeStyle = '#000';
 
     fromEvent<MouseEvent>(canvasEl, 'mousedown')
       .pipe(
@@ -57,6 +59,10 @@ export class CanvasComponent implements AfterViewInit {
 
   private draw(prevPos: Point, currentPos: Point) {
     if (!this.context) return;
+
+    this.context.lineWidth = this.config.lineWidth;
+    this.context.lineCap = 'round';
+    this.context.strokeStyle = this.config.color;
 
     this.context.beginPath();
     this.context.moveTo(prevPos.x, prevPos.y);
