@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { Point, relativeMousePosFromEvent } from '@pictionary/shared';
 import { fromEvent, pairwise, switchMap, takeUntil } from 'rxjs';
+import { SocketService } from '../socket.service';
 
 @Component({
   selector: 'app-canvas',
@@ -22,6 +23,8 @@ export class CanvasComponent implements AfterViewInit {
   @ViewChild('canvasRef')
   canvas!: ElementRef<HTMLCanvasElement>;
   context: any;
+
+  constructor(public socketService: SocketService) {}
 
   public ngAfterViewInit() {
     const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
