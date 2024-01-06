@@ -1,9 +1,4 @@
-import express, {
-  Express,
-  Request,
-  Response,
-  static as static_,
-} from "express";
+import express, { Express } from "express";
 import dotenv from "dotenv";
 import path from "path";
 
