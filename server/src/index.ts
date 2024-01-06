@@ -2,7 +2,8 @@ import express, { Express } from "express";
 import path from "path";
 import http from "http";
 import { Server } from "socket.io";
-import { config } from "@pictionary/shared";
+import { DRAW_EVENT, config } from "@pictionary/shared";
+import { handleDrawEvent } from "./event-handler";
 
 const app: Express = express();
 const port = config.serverPort || 3000;
@@ -23,8 +24,9 @@ app.use(
   express.static(path.join(__dirname, "../../web-app/dist/web-app/browser/"))
 );
 
-io.on("connection", () => {
+io.on("connection", (socket) => {
   console.log("a user connected");
+  socket.on(DRAW_EVENT, handleDrawEvent(socket));
 });
 
 server.listen(port, () => {

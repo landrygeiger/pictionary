@@ -30,6 +30,10 @@ export class CanvasComponent implements AfterViewInit {
     const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
     this.context = canvasEl.getContext('2d');
 
+    this.socketService.drawEventSubject.subscribe((drawEventParams) =>
+      this.draw(drawEventParams.start, drawEventParams.end)
+    );
+
     this.context.lineWidth = 3;
     this.context.lineCap = 'round';
     this.context.strokeStyle = '#000';
@@ -47,6 +51,7 @@ export class CanvasComponent implements AfterViewInit {
         const prevPos = relativeMousePosFromEvent(res[0], canvasEl);
         const currentPos = relativeMousePosFromEvent(res[1], canvasEl);
         this.draw(prevPos, currentPos);
+        this.socketService.emitDraw({ start: prevPos, end: currentPos });
       });
   }
 
