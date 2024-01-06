@@ -2,8 +2,8 @@
   "extends": "@tsconfig/recommended",
   "compilerOptions": {
     "incremental": true,
-    "target": "es2019",
-    "module": "ES2020",
+    "target": "ES6",
+    "module": "CommonJS",
     "declaration": true,
     "sourceMap": true,
     "composite": true,
