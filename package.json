@@ -5,13 +5,15 @@
   "description": "Pictionary over the web",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc --build --verbose tsconfig.build.json"
+    "build": "tsc --build --verbose tsconfig.build.json",
+    "start": "node ./server/dist"
   },
   "author": "Landry Geiger",
   "license": "ISC",
   "workspaces": [
     "web-app",
-    "shared"
+    "shared",
+    "server"
   ],
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.3",
