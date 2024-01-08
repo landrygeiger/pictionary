@@ -1,1 +1,13 @@
-<p>{{ config.color }}</p>
+<div class="selector-container">
+  <div
+    class="selected-color-display"
+    [style.background-color]="config.color"
+  ></div>
+  <div class="button-container">
+    <app-color-selector-button
+      [config]="config"
+      *ngFor="let color of colors"
+      [color]="color"
+    ></app-color-selector-button>
+  </div>
+</div>

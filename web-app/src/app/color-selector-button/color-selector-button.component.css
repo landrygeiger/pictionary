@@ -1,0 +1,9 @@
+button {
+  width: 25px;
+  height: 25px;
+  border: 1px solid black;
+}
+
+button:hover {
+  border: 3px solid black;
+}
