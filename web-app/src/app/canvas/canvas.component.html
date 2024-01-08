@@ -1,6 +1,2 @@
 <canvas #canvasRef width="{{ width }}" height="{{ height }}"></canvas>
-<div>
-  <button (click)="config.color = '#FF0000'">Red</button>
-  <button (click)="config.color = '#00FF00'">Green</button>
-  <button (click)="config.color = '#0000FF'">Blue</button>
-</div>
+<app-color-selector [config]="config"></app-color-selector>

@@ -12,11 +12,12 @@ import {
 } from '@pictionary/shared';
 import { fromEvent, pairwise, switchMap, takeUntil } from 'rxjs';
 import { SocketService } from '../socket.service';
+import { ColorSelectorComponent } from '../color-selector/color-selector.component';
 
 @Component({
   selector: 'app-canvas',
   standalone: true,
-  imports: [],
+  imports: [ColorSelectorComponent],
   templateUrl: './canvas.component.html',
   styleUrl: './canvas.component.css',
 })
