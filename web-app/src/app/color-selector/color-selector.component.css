@@ -13,4 +13,5 @@
 
 .selected-color-display {
   width: 25px;
+  border: 1px solid black;
 }
