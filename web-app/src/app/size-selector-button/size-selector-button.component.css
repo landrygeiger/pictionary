@@ -1,0 +1,15 @@
+button {
+  border: 1px solid black;
+  border: none;
+  background-color: white;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.size-display {
+  background-color: black;
+  border-radius: 50%;
+}

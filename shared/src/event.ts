@@ -5,4 +5,6 @@ export const DRAW_EVENT = "draw" as const;
 export type DrawEventParams = {
   start: Point;
   end: Point;
+  color: string;
+  lineWidth: number;
 };

@@ -5,14 +5,19 @@ import {
   Input,
   ViewChild,
 } from '@angular/core';
-import { Point, relativeMousePosFromEvent } from '@pictionary/shared';
+import {
+  CanvasConfig,
+  Point,
+  relativeMousePosFromEvent,
+} from '@pictionary/shared';
 import { fromEvent, pairwise, switchMap, takeUntil } from 'rxjs';
 import { SocketService } from '../socket.service';
+import { CanvasConfigSelectorComponent } from '../canvas-config-selector/canvas-config-selector.component';
 
 @Component({
   selector: 'app-canvas',
   standalone: true,
-  imports: [],
+  imports: [CanvasConfigSelectorComponent],
   templateUrl: './canvas.component.html',
   styleUrl: './canvas.component.css',
 })
@@ -22,7 +27,9 @@ export class CanvasComponent implements AfterViewInit {
 
   @ViewChild('canvasRef')
   canvas!: ElementRef<HTMLCanvasElement>;
-  context: any;
+  context!: CanvasRenderingContext2D | null;
+
+  config: CanvasConfig = { color: '#000', lineWidth: 5 };
 
   constructor(public socketService: SocketService) {}
 
@@ -31,12 +38,13 @@ export class CanvasComponent implements AfterViewInit {
     this.context = canvasEl.getContext('2d');
 
     this.socketService.drawEventSubject.subscribe((drawEventParams) =>
-      this.draw(drawEventParams.start, drawEventParams.end)
+      this.draw(
+        drawEventParams.start,
+        drawEventParams.end,
+        drawEventParams.color,
+        drawEventParams.lineWidth
+      )
     );
-
-    this.context.lineWidth = 3;
-    this.context.lineCap = 'round';
-    this.context.strokeStyle = '#000';
 
     fromEvent<MouseEvent>(canvasEl, 'mousedown')
       .pipe(
@@ -50,13 +58,32 @@ export class CanvasComponent implements AfterViewInit {
       .subscribe((res: [MouseEvent, MouseEvent]) => {
         const prevPos = relativeMousePosFromEvent(res[0], canvasEl);
         const currentPos = relativeMousePosFromEvent(res[1], canvasEl);
-        this.draw(prevPos, currentPos);
-        this.socketService.emitDraw({ start: prevPos, end: currentPos });
+        this.draw(
+          prevPos,
+          currentPos,
+          this.config.color,
+          this.config.lineWidth
+        );
+        this.socketService.emitDraw({
+          start: prevPos,
+          end: currentPos,
+          color: this.config.color,
+          lineWidth: this.config.lineWidth,
+        });
       });
   }
 
-  private draw(prevPos: Point, currentPos: Point) {
+  private draw(
+    prevPos: Point,
+    currentPos: Point,
+    color: string,
+    lineWidth: number
+  ) {
     if (!this.context) return;
+
+    this.context.strokeStyle = color;
+    this.context.lineWidth = lineWidth;
+    this.context.lineCap = 'round';
 
     this.context.beginPath();
     this.context.moveTo(prevPos.x, prevPos.y);

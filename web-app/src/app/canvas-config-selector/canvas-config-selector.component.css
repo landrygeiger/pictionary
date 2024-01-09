@@ -1,0 +1,17 @@
+.selector-container {
+  --space: 4px;
+  display: flex;
+  gap: var(--space);
+}
+
+.button-container {
+  display: flex;
+  width: 286px;
+  flex-wrap: wrap;
+  gap: var(--space);
+}
+
+.selected-color-display {
+  width: 50px;
+  border: 1px solid black;
+}

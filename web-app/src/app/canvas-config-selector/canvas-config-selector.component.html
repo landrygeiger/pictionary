@@ -1,0 +1,19 @@
+<div class="selector-container">
+  <div
+    class="selected-color-display"
+    [style.background-color]="config.color"
+  ></div>
+  <div class="button-container">
+    <app-color-selector-button
+      [config]="config"
+      *ngFor="let color of colors"
+      [color]="color"
+    ></app-color-selector-button>
+  </div>
+  <app-size-selector-button
+    [config]="config"
+    *ngFor="let size of sizes"
+    [size]="size"
+  >
+  </app-size-selector-button>
+</div>
