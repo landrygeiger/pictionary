@@ -2,16 +2,19 @@ import { Component, Input } from '@angular/core';
 import { CanvasConfig } from '@pictionary/shared';
 import { ColorSelectorButtonComponent } from '../color-selector-button/color-selector-button.component';
 import { NgFor } from '@angular/common';
+import { SizeSelectorButtonComponent } from '../size-selector-button/size-selector-button.component';
 
 @Component({
   selector: 'app-canvas-config-selector',
   standalone: true,
-  imports: [ColorSelectorButtonComponent, NgFor],
+  imports: [ColorSelectorButtonComponent, SizeSelectorButtonComponent, NgFor],
   templateUrl: './canvas-config-selector.component.html',
   styleUrl: './canvas-config-selector.component.css',
 })
 export class CanvasConfigSelectorComponent {
   @Input({ required: true }) config!: CanvasConfig;
+
+  readonly sizes = [5, 10, 20, 40];
 
   readonly colors = [
     // Monochromatic

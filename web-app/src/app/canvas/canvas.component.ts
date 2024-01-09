@@ -29,7 +29,7 @@ export class CanvasComponent implements AfterViewInit {
   canvas!: ElementRef<HTMLCanvasElement>;
   context!: CanvasRenderingContext2D | null;
 
-  config: CanvasConfig = { color: '#000', lineWidth: 3 };
+  config: CanvasConfig = { color: '#000', lineWidth: 5 };
 
   constructor(public socketService: SocketService) {}
 

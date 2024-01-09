@@ -6,7 +6,7 @@
 
 .button-container {
   display: flex;
-  width: 300px;
+  width: 286px;
   flex-wrap: wrap;
   gap: var(--space);
 }
