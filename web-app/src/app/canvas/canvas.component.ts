@@ -12,7 +12,7 @@ import {
 } from '@pictionary/shared';
 import { fromEvent, pairwise, switchMap, takeUntil } from 'rxjs';
 import { SocketService } from '../socket.service';
-import { CanvasConfigSelectorComponent } from '../color-selector/canvas-config-selector.component';
+import { CanvasConfigSelectorComponent } from '../canvas-config-selector/canvas-config-selector.component';
 
 @Component({
   selector: 'app-canvas',
