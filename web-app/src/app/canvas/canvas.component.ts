@@ -41,7 +41,8 @@ export class CanvasComponent implements AfterViewInit {
       this.draw(
         drawEventParams.start,
         drawEventParams.end,
-        drawEventParams.color
+        drawEventParams.color,
+        drawEventParams.lineWidth
       )
     );
 
@@ -57,20 +58,31 @@ export class CanvasComponent implements AfterViewInit {
       .subscribe((res: [MouseEvent, MouseEvent]) => {
         const prevPos = relativeMousePosFromEvent(res[0], canvasEl);
         const currentPos = relativeMousePosFromEvent(res[1], canvasEl);
-        this.draw(prevPos, currentPos, this.config.color);
+        this.draw(
+          prevPos,
+          currentPos,
+          this.config.color,
+          this.config.lineWidth
+        );
         this.socketService.emitDraw({
           start: prevPos,
           end: currentPos,
           color: this.config.color,
+          lineWidth: this.config.lineWidth,
         });
       });
   }
 
-  private draw(prevPos: Point, currentPos: Point, color: string) {
+  private draw(
+    prevPos: Point,
+    currentPos: Point,
+    color: string,
+    lineWidth: number
+  ) {
     if (!this.context) return;
 
     this.context.strokeStyle = color;
-    this.context.lineWidth = this.config.lineWidth;
+    this.context.lineWidth = lineWidth;
     this.context.lineCap = 'round';
 
     this.context.beginPath();
