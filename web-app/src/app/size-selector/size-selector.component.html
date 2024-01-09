@@ -1,1 +1,5 @@
-<p>size-selector works!</p>
+<app-size-selector-button
+  *ngFor="let size of sizes"
+  [size]="size"
+  [config]="config"
+></app-size-selector-button>

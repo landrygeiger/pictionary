@@ -4,13 +4,13 @@ import { ColorSelectorButtonComponent } from '../color-selector-button/color-sel
 import { NgFor } from '@angular/common';
 
 @Component({
-  selector: 'app-color-selector',
+  selector: 'app-canvas-config-selector',
   standalone: true,
   imports: [ColorSelectorButtonComponent, NgFor],
-  templateUrl: './color-selector.component.html',
-  styleUrl: './color-selector.component.css',
+  templateUrl: './canvas-config-selector.component.html',
+  styleUrl: './canvas-config-selector.component.css',
 })
-export class ColorSelectorComponent {
+export class CanvasConfigSelectorComponent {
   @Input({ required: true }) config!: CanvasConfig;
 
   readonly colors = [
