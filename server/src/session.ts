@@ -3,11 +3,14 @@ import { match } from "ts-pattern";
 import * as E from "fp-ts/Either";
 import * as A from "fp-ts/Array";
 import { flow, pipe } from "fp-ts/lib/function";
+import { v4 as uuidv4 } from "uuid";
 
 export const newSession = (ownerName: string): Session => ({
   state: "lobby",
   players: [{ name: ownerName, owner: true }],
 });
+
+export const newSessionId = uuidv4;
 
 type SessionAction = JoinAction | LeaveAction;
 
@@ -49,20 +52,20 @@ const removePlayer = (session: Session) =>
     }))
   );
 
-const reduceJoin = (session: Session) => (action: JoinAction) =>
+const handleJoinAction = (session: Session) => (action: JoinAction) =>
   match(session)
     .with({ state: "lobby" }, () => addPlayer(session)(action.playerName))
     .exhaustive();
 
-const reduceLeave = (session: Session) => (action: LeaveAction) =>
+const handleLeaveAction = (session: Session) => (action: LeaveAction) =>
   match(session)
     .with({ state: "lobby" }, () => removePlayer(session)(action.playerName))
     .exhaustive();
 
-export const sessionReducer =
+export const reduceSession =
   (action: SessionAction) =>
   (prev: Session): E.Either<SessionError, Session> =>
     match(action)
-      .with({ kind: "join" }, reduceJoin(prev))
-      .with({ kind: "leave" }, reduceLeave(prev))
+      .with({ kind: "join" }, handleJoinAction(prev))
+      .with({ kind: "leave" }, handleLeaveAction(prev))
       .exhaustive();

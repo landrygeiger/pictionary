@@ -1,5 +1,11 @@
 export { type Point, relativeMousePosFromEvent } from "./point";
-export { DRAW_EVENT, DrawEventParams } from "./event";
+export {
+  DRAW_EVENT,
+  type DrawEventParams,
+  CREATE_EVENT,
+  type CreateEventParams,
+  type CreateEventResponse,
+} from "./event";
 export { type CanvasConfig } from "./canvas";
 export { config } from "./config";
 export {
@@ -11,6 +17,10 @@ export {
   mutexError,
   type SessionError,
   sessionError,
+  type ValidationError,
+  validationError,
 } from "./error";
 export { type Session, type Player } from "./session";
 export { not } from "./pure-util";
+export { validateName } from "./validate";
+export { type Payload, createJWT } from "./token";

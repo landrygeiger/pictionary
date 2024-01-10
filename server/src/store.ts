@@ -1,5 +1,6 @@
 import * as TE from "fp-ts/TaskEither";
 import * as IOE from "fp-ts/IOEither";
+import * as E from "fp-ts/Either";
 import { Mutex } from "async-mutex";
 import {
   AlreadyExistsError,
@@ -11,7 +12,7 @@ import {
 } from "@pictionary/shared";
 import { flow, pipe } from "fp-ts/lib/function";
 
-type Store<T> = {
+export type Store<T> = {
   data: Map<string, T>;
   mutex: Mutex;
 };
@@ -47,6 +48,17 @@ const update =
       IOE.tap((newValue) => IOE.of(store.data.set(key, newValue)))
     );
 
+const updateEither =
+  <T, E>(store: Store<T>) =>
+  (updateFn: (a: T) => E.Either<E, T>) =>
+  (key: string) =>
+    pipe(
+      key,
+      read(store),
+      IOE.flatMap(IOE.fromEitherK(updateFn)),
+      IOE.tap((newValue) => IOE.of(store.data.set(key, newValue)))
+    );
+
 const remove = <T>(store: Store<T>) =>
   flow(
     IOE.fromPredicate(store.data.has, (key) =>
@@ -63,7 +75,7 @@ const acquireMutex = <T>(store: Store<T>) =>
 
 const releaseMutex = (release: () => void) => TE.of(release());
 
-type StoreAPI<T> = {
+export type StoreAPI<T> = {
   create: (
     key: string
   ) => (value: T) => TE.TaskEither<MutexError | AlreadyExistsError, string>;
@@ -71,6 +83,11 @@ type StoreAPI<T> = {
   update: (
     key: string
   ) => (updateFn: (a: T) => T) => TE.TaskEither<MutexError | NotFoundError, T>;
+  updateEither: (
+    key: string
+  ) => <E>(
+    updateFn: (a: T) => E.Either<E, T>
+  ) => TE.TaskEither<E | MutexError | NotFoundError, T>;
   delete: (key: string) => TE.TaskEither<MutexError | NotFoundError, string>;
 };
 
@@ -93,6 +110,14 @@ export const storeAPI = <T>(store: Store<T>): StoreAPI<T> => ({
       () => TE.fromIOEither(update(store)(updateFn)(key)),
       releaseMutex
     ),
+  updateEither:
+    (key: string) =>
+    <E>(updateFn: (a: T) => E.Either<E, T>) =>
+      TE.bracketW(
+        acquireMutex(store),
+        () => TE.fromIOEither(updateEither<T, E>(store)(updateFn)(key)),
+        releaseMutex
+      ),
   delete: (key: string) =>
     TE.bracketW(
       acquireMutex(store),

@@ -2,8 +2,10 @@ import express, { Express } from "express";
 import path from "path";
 import http from "http";
 import { Server } from "socket.io";
-import { DRAW_EVENT, config } from "@pictionary/shared";
-import { handleDrawEvent } from "./event-handler";
+import { CREATE_EVENT, DRAW_EVENT, Session, config } from "@pictionary/shared";
+import { handleCreateEvent, handleDrawEvent } from "./event-handler";
+import { store, storeAPI } from "./store";
+import "dotenv/config";
 
 const app: Express = express();
 const port = config.serverPort || 3000;
@@ -19,14 +21,23 @@ const io = new Server(server, {
   },
 });
 
+const sessions = store<Session>();
+const sessionsAPI = storeAPI(sessions);
+
 app.use(
   "/",
   express.static(path.join(__dirname, "../../web-app/dist/web-app/browser/"))
 );
 
 io.on("connection", (socket) => {
-  console.log("a user connected");
+  console.log(`[Server]: User with id ${socket.id} has connected.`);
+
   socket.on(DRAW_EVENT, handleDrawEvent(socket));
+  socket.on(CREATE_EVENT, handleCreateEvent(sessionsAPI));
+
+  socket.on("disconnect", () =>
+    console.log(`[Server]: User with id ${socket.id} has disconnected.`)
+  );
 });
 
 server.listen(port, () => {

@@ -37,3 +37,13 @@ export const sessionError = (message: string): SessionError => ({
   kind: "session-error",
   message,
 });
+
+export type ValidationError = {
+  kind: "validation-error";
+  message: string;
+};
+
+export const validationError = (message: string): ValidationError => ({
+  kind: "validation-error",
+  message,
+});
