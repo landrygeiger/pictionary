@@ -25,6 +25,7 @@ export const handleDrawEvent =
   broadcastToAllExceptSender<DrawEventParams>(DRAW_EVENT);
 
 export const handleCreateEvent =
+  (socket: Socket) =>
   (sessionsAPI: StoreAPI<Session>) =>
   async (params: CreateEventParams): Promise<CreateEventResponse> =>
     pipe(
@@ -35,6 +36,7 @@ export const handleCreateEvent =
       TE.tap(({ sessionId, session }) =>
         sessionsAPI.create(sessionId)(session)
       ),
+      TE.tap(({ sessionId }) => TE.right(socket.join(sessionId))),
       TE.let(
         "payload",
         ({ ownerName, sessionId }): Payload => ({ name: ownerName, sessionId })

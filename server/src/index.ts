@@ -33,7 +33,7 @@ io.on("connection", (socket) => {
   console.log(`[Server]: User with id ${socket.id} has connected.`);
 
   socket.on(DRAW_EVENT, handleDrawEvent(socket));
-  socket.on(CREATE_EVENT, handleCreateEvent(sessionsAPI));
+  socket.on(CREATE_EVENT, handleCreateEvent(socket)(sessionsAPI));
 
   socket.on("disconnect", () =>
     console.log(`[Server]: User with id ${socket.id} has disconnected.`)
@@ -41,5 +41,5 @@ io.on("connection", (socket) => {
 });
 
 server.listen(port, () => {
-  console.log(`Server started on port ${port}.`);
+  console.log(`[Server]: Server started on port ${port}.`);
 });
