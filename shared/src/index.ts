@@ -10,3 +10,4 @@ export {
   type MutexError,
   mutexError,
 } from "./error";
+export { type Session, type Player } from "./session";
