@@ -8,6 +8,7 @@ import {
   NotFoundError,
   alreadyExistsError,
   mutexError,
+  not,
   notFoundError,
 } from "@pictionary/shared";
 import { flow, pipe } from "fp-ts/lib/function";
@@ -26,14 +27,14 @@ const create =
   <T>(store: Store<T>) =>
   (value: T) =>
     flow(
-      IOE.fromPredicate(store.data.has, (key) =>
+      IOE.fromPredicate(not(store.data.has.bind(store.data)), (key) =>
         alreadyExistsError(`Key ${key} already exists in store.`)
       ),
       IOE.tap((key) => IOE.of(store.data.set(key, value)))
     );
 
 const read = <T>(store: Store<T>) =>
-  IOE.liftNullable(store.data.get, (key) =>
+  IOE.liftNullable(store.data.get.bind(store.data), (key) =>
     notFoundError(`Key ${key} doesn't exist in store.`)
   );
 
@@ -61,7 +62,7 @@ const updateEither =
 
 const remove = <T>(store: Store<T>) =>
   flow(
-    IOE.fromPredicate(store.data.has, (key) =>
+    IOE.fromPredicate(store.data.has.bind(store.data), (key) =>
       notFoundError(`Key ${key} doesn't exist in store.`)
     ),
     IOE.tap((key) => IOE.of(store.data.delete(key)))

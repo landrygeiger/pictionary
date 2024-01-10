@@ -27,8 +27,8 @@ export const handleDrawEvent =
 export const handleCreateEvent =
   (socket: Socket) =>
   (sessionsAPI: StoreAPI<Session>) =>
-  async (params: CreateEventParams): Promise<CreateEventResponse> =>
-    pipe(
+  async (params: CreateEventParams, cb: (res: CreateEventResponse) => void) => {
+    const res = await pipe(
       TE.Do,
       TE.bind("ownerName", () => TE.fromEither(validateName(params.ownerName))),
       TE.let("sessionId", () => newSessionId()),
@@ -50,3 +50,5 @@ export const handleCreateEvent =
       ),
       TE.map(({ payload }) => ({ token: createJWT(payload) }))
     )();
+    cb(res);
+  };

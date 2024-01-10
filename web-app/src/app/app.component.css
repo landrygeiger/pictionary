@@ -1,5 +1,9 @@
-.content-container {
+.app-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.content-container {
+  max-width: 1000px;
 }
