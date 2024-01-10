@@ -5,6 +5,9 @@ export {
   CREATE_EVENT,
   type CreateEventParams,
   type CreateEventResponse,
+  JOIN_EVENT,
+  type JoinEventParams,
+  type JoinEventResponse,
 } from "./event";
 export { type CanvasConfig } from "./canvas";
 export { config } from "./config";

@@ -3,7 +3,11 @@ import path from "path";
 import http from "http";
 import { Server } from "socket.io";
 import { CREATE_EVENT, DRAW_EVENT, Session, config } from "@pictionary/shared";
-import { handleCreateEvent, handleDrawEvent } from "./event-handler";
+import {
+  handleCreateEvent,
+  handleDrawEvent,
+  socketEventHandler,
+} from "./event-handler";
 import { store, storeAPI } from "./store";
 import "dotenv/config";
 
@@ -33,7 +37,10 @@ io.on("connection", (socket) => {
   console.log(`[Server]: User with id ${socket.id} has connected.`);
 
   socket.on(DRAW_EVENT, handleDrawEvent(socket));
-  socket.on(CREATE_EVENT, handleCreateEvent(socket)(sessionsAPI));
+  socket.on(
+    CREATE_EVENT,
+    socketEventHandler(socket, sessionsAPI, handleCreateEvent)
+  );
 
   socket.on("disconnect", () =>
     console.log(`[Server]: User with id ${socket.id} has disconnected.`)
