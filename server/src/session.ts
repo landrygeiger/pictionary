@@ -39,9 +39,9 @@ const addPlayer = (session: Session) =>
     }))
   );
 
-const reduceJoin = (prev: Session) => (action: JoinAction) =>
-  match(prev)
-    .with({ state: "lobby" }, () => addPlayer(prev)(action.playerName))
+const reduceJoin = (session: Session) => (action: JoinAction) =>
+  match(session)
+    .with({ state: "lobby" }, () => addPlayer(session)(action.playerName))
     .exhaustive();
 
 const sessionReducer =
