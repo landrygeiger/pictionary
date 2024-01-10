@@ -9,5 +9,8 @@ export {
   notFoundError,
   type MutexError,
   mutexError,
+  type SessionError,
+  sessionError,
 } from "./error";
 export { type Session, type Player } from "./session";
+export { not } from "./pure-util";
