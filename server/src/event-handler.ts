@@ -41,5 +41,12 @@ export const handleCreateEvent =
         "payload",
         ({ ownerName, sessionId }): Payload => ({ name: ownerName, sessionId })
       ),
+      TE.tap(({ sessionId, ownerName }) =>
+        TE.right(
+          console.log(
+            `[Server]: Created session with id ${sessionId} and owner ${ownerName}.`
+          )
+        )
+      ),
       TE.map(({ payload }) => ({ token: createJWT(payload) }))
     )();
