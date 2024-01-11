@@ -42,10 +42,16 @@ type LeaveAction = {
   socketId: string;
 };
 
-const hasPlayer = (session: Session) => (playerName: string) =>
+const hasPlayerWithName = (session: Session) => (playerName: string) =>
   pipe(
     session.players,
     A.exists((p) => p.name === playerName)
+  );
+
+const hasPlayerWithSocket = (session: Session) => (socketId: string) =>
+  pipe(
+    session.players,
+    A.exists((p) => p.socketId === socketId)
   );
 
 const getPlayer = (session: Session) => (socketId: string) =>
@@ -57,10 +63,14 @@ const getPlayer = (session: Session) => (socketId: string) =>
     )
   );
 
-const performAddPlayer = (session: Session) => (socketId: string) =>
+export const performAddPlayer = (session: Session) => (socketId: string) =>
   flow(
-    E.fromPredicate(not(hasPlayer(session)), () =>
+    E.fromPredicate(not(hasPlayerWithName(session)), () =>
       sessionError("That name is already in use.")
+    ),
+    E.filterOrElse(
+      () => !hasPlayerWithSocket(session)(socketId),
+      () => sessionError("That socket is already in the session.")
     ),
     E.map((playerName) => ({
       ...session,
