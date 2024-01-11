@@ -54,12 +54,12 @@ const hasPlayerWithSocket = (session: Session) => (socketId: string) =>
     A.exists((p) => p.socketId === socketId)
   );
 
-const getPlayer = (session: Session) => (socketId: string) =>
+const getPlayerBySocketId = (session: Session) => (socketId: string) =>
   pipe(
     session.players,
     A.findFirst((p) => p.socketId === socketId),
     E.fromOption(() =>
-      sessionError("A player with that name could not be found.")
+      sessionError("A player with that socket id could not be found.")
     )
   );
 
@@ -78,9 +78,9 @@ export const performAddPlayer = (session: Session) => (socketId: string) =>
     }))
   );
 
-const performRemovePlayer = (session: Session) =>
+export const performRemovePlayer = (session: Session) =>
   flow(
-    getPlayer(session),
+    getPlayerBySocketId(session),
     E.map(removePlayerKeepListOwned(session.players)),
     E.map(
       (players): Session => ({
