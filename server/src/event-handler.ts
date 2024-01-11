@@ -27,23 +27,20 @@ export const handleDrawEvent =
   broadcastToAllExceptSender<DrawEventParams>(DRAW_EVENT);
 
 type EventHandler<Params, Response> = (
-  socket: Socket,
-  sessionsAPI: StoreAPI<Session>
-) => (params: Params) => Promise<Response>;
+  socket: Socket
+) => (sessionsAPI: StoreAPI<Session>) => (params: Params) => Promise<Response>;
 
 export const socketEventHandler =
-  <Params, Response>(
-    socket: Socket,
-    sessionsAPI: StoreAPI<Session>,
-    handler: EventHandler<Params, Response>
-  ) =>
+  (socket: Socket) =>
+  (sessionsAPI: StoreAPI<Session>) =>
+  <Params, Response>(handler: EventHandler<Params, Response>) =>
   async (params: Params, callback: (res: Response) => void) =>
-    callback(await handler(socket, sessionsAPI)(params));
+    callback(await handler(socket)(sessionsAPI)(params));
 
 export const handleCreateEvent: EventHandler<
   CreateEventParams,
   CreateEventResponse
-> = (socket, sessionsAPI) => (params) =>
+> = (socket) => (sessionsAPI) => (params) =>
   pipe(
     TE.Do,
     TE.bind("ownerName", () => TE.fromEither(validateName(params.ownerName))),
@@ -66,7 +63,7 @@ export const handleCreateEvent: EventHandler<
   )();
 
 export const handleJoinEvent: EventHandler<JoinEventParams, any> =
-  (socket, sessionsAPI) => (params) =>
+  (socket) => (sessionsAPI) => (params) =>
     pipe(
       TE.Do,
       TE.bind("playerName", () =>

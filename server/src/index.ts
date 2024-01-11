@@ -39,7 +39,7 @@ io.on("connection", (socket) => {
   socket.on(DRAW_EVENT, handleDrawEvent(socket));
   socket.on(
     CREATE_EVENT,
-    socketEventHandler(socket, sessionsAPI, handleCreateEvent)
+    socketEventHandler(socket)(sessionsAPI)(handleCreateEvent)
   );
 
   socket.on("disconnect", () =>
