@@ -11,10 +11,18 @@ import { FormsModule } from '@angular/forms';
 })
 export class RoomSelectorComponent {
   name = '';
+  sessionId = '';
 
   constructor(public socketService: SocketService) {}
 
   handleCreate = () => {
     this.socketService.emitCreate({ ownerName: this.name });
+  };
+
+  handleJoin = () => {
+    this.socketService.emitJoin({
+      playerName: this.name,
+      sessionId: this.sessionId,
+    });
   };
 }

@@ -1,4 +1,9 @@
 <div class="container">
-  <input [(ngModel)]="name" />
+  <input [(ngModel)]="name" placeholder="Name" />
   <button (click)="handleCreate()">Create Room</button>
+</div>
+<div class="container">
+  <input [(ngModel)]="name" placeholder="Name" />
+  <input [(ngModel)]="sessionId" placeholder="Session Id" />
+  <button (click)="handleJoin()">Join Room</button>
 </div>

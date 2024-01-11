@@ -2,6 +2,7 @@ import {
   AlreadyExistsError,
   MutexError,
   NotFoundError,
+  SessionError,
   ValidationError,
 } from "./error";
 import { Point } from "./point";
@@ -37,6 +38,6 @@ export type JoinEventParams = {
 };
 
 export type JoinEventResponse = E.Either<
-  MutexError | ValidationError | NotFoundError,
+  MutexError | ValidationError | NotFoundError | SessionError,
   { token: string }
 >;

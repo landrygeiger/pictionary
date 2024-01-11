@@ -5,6 +5,9 @@ import {
   CreateEventResponse,
   DRAW_EVENT,
   DrawEventParams,
+  JOIN_EVENT,
+  JoinEventParams,
+  JoinEventResponse,
   config,
 } from '@pictionary/shared';
 import { io } from 'socket.io-client';
@@ -32,16 +35,23 @@ export class SocketService {
   private handleDrawEvent = (params: DrawEventParams) =>
     this.drawEventSubject.next(params);
 
-  private handleCreateEventResponse: (res: CreateEventResponse) => void =
-    E.match(flow(JSON.stringify, console.log), (res) => {
-      this.token = res.token;
-    });
+  private handleCreateAndJoinEventResponse: (
+    res: CreateEventResponse | JoinEventResponse
+  ) => void = E.match(flow(JSON.stringify, console.log), (res) => {
+    this.token = res.token;
+  });
 
   public emitDraw = emitter<DrawEventParams>(this.socket, DRAW_EVENT);
 
   public emitCreate = emitter<CreateEventParams>(
     this.socket,
     CREATE_EVENT,
-    this.handleCreateEventResponse
+    this.handleCreateAndJoinEventResponse
+  );
+
+  public emitJoin = emitter<JoinEventParams>(
+    this.socket,
+    JOIN_EVENT,
+    this.handleCreateAndJoinEventResponse
   );
 }

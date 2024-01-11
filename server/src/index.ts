@@ -2,10 +2,17 @@ import express, { Express } from "express";
 import path from "path";
 import http from "http";
 import { Server } from "socket.io";
-import { CREATE_EVENT, DRAW_EVENT, Session, config } from "@pictionary/shared";
+import {
+  CREATE_EVENT,
+  DRAW_EVENT,
+  JOIN_EVENT,
+  Session,
+  config,
+} from "@pictionary/shared";
 import {
   handleCreateEvent,
   handleDrawEvent,
+  handleJoinEvent,
   socketEventHandler,
 } from "./event-handler";
 import { store, storeAPI } from "./store";
@@ -36,11 +43,11 @@ app.use(
 io.on("connection", (socket) => {
   console.log(`[Server]: User with id ${socket.id} has connected.`);
 
+  const handler = socketEventHandler(socket)(sessionsAPI);
+
   socket.on(DRAW_EVENT, handleDrawEvent(socket));
-  socket.on(
-    CREATE_EVENT,
-    socketEventHandler(socket)(sessionsAPI)(handleCreateEvent)
-  );
+  socket.on(CREATE_EVENT, handler(handleCreateEvent));
+  socket.on(JOIN_EVENT, handler(handleJoinEvent));
 
   socket.on("disconnect", () =>
     console.log(`[Server]: User with id ${socket.id} has disconnected.`)

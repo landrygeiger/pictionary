@@ -62,32 +62,32 @@ export const handleCreateEvent: EventHandler<
     TE.map(({ payload }) => ({ token: createJWT(payload) }))
   )();
 
-export const handleJoinEvent: EventHandler<JoinEventParams, any> =
-  (socket) => (sessionsAPI) => (params) =>
-    pipe(
-      TE.Do,
-      TE.bind("playerName", () =>
-        TE.fromEither(validateName(params.playerName))
-      ),
-      TE.tap(({ playerName }) =>
-        sessionsAPI.updateEither(params.sessionId)(
-          reduceSession({ kind: "join", playerName })
+export const handleJoinEvent: EventHandler<
+  JoinEventParams,
+  JoinEventResponse
+> = (socket) => (sessionsAPI) => (params) =>
+  pipe(
+    TE.Do,
+    TE.bind("playerName", () => TE.fromEither(validateName(params.playerName))),
+    TE.tap(({ playerName }) =>
+      sessionsAPI.updateEither(params.sessionId)(
+        reduceSession({ kind: "join", playerName })
+      )
+    ),
+    TE.tap(() => TE.right(socket.join(params.sessionId))),
+    TE.tap(({ playerName }) =>
+      TE.right(
+        console.log(
+          `[Server]: Player ${playerName} joined session with id ${params.sessionId}.`
         )
-      ),
-      TE.tap(() => TE.right(socket.join(params.sessionId))),
-      TE.tap(({ playerName }) =>
-        TE.right(
-          console.log(
-            `[Server]: Player ${playerName} joined session with id ${params.sessionId}.`
-          )
-        )
-      ),
-      TE.let(
-        "payload",
-        ({ playerName }): Payload => ({
-          name: playerName,
-          sessionId: params.sessionId,
-        })
-      ),
-      TE.map(({ payload }) => ({ token: createJWT(payload) }))
-    )();
+      )
+    ),
+    TE.let(
+      "payload",
+      ({ playerName }): Payload => ({
+        name: playerName,
+        sessionId: params.sessionId,
+      })
+    ),
+    TE.map(({ payload }) => ({ token: createJWT(payload) }))
+  )();
