@@ -2,8 +2,23 @@ import express, { Express } from "express";
 import path from "path";
 import http from "http";
 import { Server } from "socket.io";
-import { DRAW_EVENT, config } from "@pictionary/shared";
-import { handleDrawEvent } from "./event-handler";
+import {
+  CREATE_EVENT,
+  DISCONNECT_EVENT,
+  DRAW_EVENT,
+  JOIN_EVENT,
+  Session,
+  config,
+} from "@pictionary/shared";
+import {
+  handleCreateEvent,
+  handleDisconnectEvent,
+  handleDrawEvent,
+  handleJoinEvent,
+  socketEventHandler,
+} from "./event-handler";
+import "dotenv/config";
+import { sessionsAPI } from "./session-store";
 
 const app: Express = express();
 const port = config.serverPort || 3000;
@@ -25,10 +40,16 @@ app.use(
 );
 
 io.on("connection", (socket) => {
-  console.log("a user connected");
+  console.log(`[Server]: User with id ${socket.id} has connected.`);
+
+  const handler = socketEventHandler(socket)(sessionsAPI);
+
   socket.on(DRAW_EVENT, handleDrawEvent(socket));
+  socket.on(CREATE_EVENT, handler(handleCreateEvent));
+  socket.on(JOIN_EVENT, handler(handleJoinEvent));
+  socket.on(DISCONNECT_EVENT, handler(handleDisconnectEvent));
 });
 
 server.listen(port, () => {
-  console.log(`Server started on port ${port}.`);
+  console.log(`[Server]: Server started on port ${port}.`);
 });
