@@ -1,11 +1,11 @@
 import * as E from "fp-ts/Either";
 import { validationError } from "./error";
 import { flow } from "fp-ts/lib/function";
-import { isEmpty, isLongerThan, not } from "./pure-util";
+import { isEmptyStr, isLongerThan, not } from "./pure-util";
 import { config } from "./config";
 
 export const validateName = flow(
-  E.fromPredicate(not(isEmpty), () =>
+  E.fromPredicate(not(isEmptyStr), () =>
     validationError("Names must not be empty.")
   ),
   E.filterOrElse(not(isLongerThan(config.maxNameLength)), () =>

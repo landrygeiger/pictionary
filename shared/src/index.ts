@@ -26,9 +26,12 @@ export {
 export {
   type Session,
   type Player,
-  type AbandonedSessionState,
+  type EndingSessionState,
   type LobbySessionState,
+  playerEq,
+  removePlayerFromList,
+  removePlayerKeepListOwned,
 } from "./session";
-export { not } from "./pure-util";
+export { not, isEmptyArr } from "./pure-util";
 export { validateName } from "./validate";
 export { type Payload, createJWT } from "./token";

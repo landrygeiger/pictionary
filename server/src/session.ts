@@ -1,15 +1,23 @@
 import {
   Session,
   SessionError,
+  isEmptyArr,
   not,
   notFoundError,
+  playerEq,
+  removePlayerFromList,
   sessionError,
 } from "@pictionary/shared";
 import { match } from "ts-pattern";
 import * as E from "fp-ts/Either";
 import * as A from "fp-ts/Array";
-import { flow, pipe } from "fp-ts/lib/function";
+import * as B from "fp-ts/boolean";
+import { flip, flow, identity, pipe } from "fp-ts/lib/function";
 import { v4 as uuidv4 } from "uuid";
+import {
+  promoteFirstPlayer,
+  removePlayerKeepListOwned,
+} from "@pictionary/shared/dist/session";
 
 export const newSession = (ownerName: string): Session => ({
   state: "lobby",
@@ -39,10 +47,13 @@ const hasPlayer = (session: Session) => (playerName: string) =>
 const getPlayer = (session: Session) => (playerName: string) =>
   pipe(
     session.players,
-    A.findFirst((p) => p.name === playerName)
+    A.findFirst((p) => p.name === playerName),
+    E.fromOption(() =>
+      sessionError("A player with that name could not be found.")
+    )
   );
 
-const addPlayer = (session: Session) =>
+const performAddPlayer = (session: Session) =>
   flow(
     E.fromPredicate(not(hasPlayer(session)), () =>
       sessionError("That name is already in use.")
@@ -53,26 +64,37 @@ const addPlayer = (session: Session) =>
     }))
   );
 
-const removePlayer = (session: Session) =>
+const performRemovePlayer = (session: Session) =>
   flow(
     getPlayer(session),
-    E.fromOption(() =>
-      sessionError("A player with that name could not be found.")
-    ),
-    E.map((playerName) => ({
-      ...session,
-      players: session.players.filter((p) => p.name !== playerName),
-    }))
+    E.map(removePlayerKeepListOwned(session.players)),
+    E.map(
+      (players): Session => ({
+        ...session,
+        players,
+        state: isEmptyArr(players) ? "ending" : session.state,
+      })
+    )
   );
 
 const handleJoinAction = (session: Session) => (action: JoinAction) =>
   match(session)
-    .with({ state: "lobby" }, () => addPlayer(session)(action.playerName))
+    .with({ state: "lobby" }, () =>
+      performAddPlayer(session)(action.playerName)
+    )
+    .with({ state: "ending" }, () =>
+      E.left(sessionError("An ending session cannot be joined."))
+    )
     .exhaustive();
 
 const handleLeaveAction = (session: Session) => (action: LeaveAction) =>
   match(session)
-    .with({ state: "lobby" }, () => removePlayer(session)(action.playerName))
+    .with({ state: "lobby" }, () =>
+      performRemovePlayer(session)(action.playerName)
+    )
+    .with({ state: "ending" }, () =>
+      E.left(sessionError("An ending session cannot be left."))
+    )
     .exhaustive();
 
 export const reduceSession =
