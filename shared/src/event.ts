@@ -25,9 +25,7 @@ export type CreateEventParams = {
 
 export type CreateEventResponse = E.Either<
   MutexError | ValidationError | AlreadyExistsError,
-  {
-    token: string;
-  }
+  { sessionId: string }
 >;
 
 export const JOIN_EVENT = "join" as const;
@@ -39,5 +37,14 @@ export type JoinEventParams = {
 
 export type JoinEventResponse = E.Either<
   MutexError | ValidationError | NotFoundError | SessionError,
-  { token: string }
+  void
+>;
+
+export const DISCONNECT_EVENT = "disconnect" as const;
+
+export type DisconnectEventParams = {};
+
+export type DisconnectEventResponse = E.Either<
+  MutexError | NotFoundError | SessionError,
+  void
 >;

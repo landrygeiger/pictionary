@@ -8,6 +8,9 @@ export {
   JOIN_EVENT,
   type JoinEventParams,
   type JoinEventResponse,
+  DISCONNECT_EVENT,
+  type DisconnectEventParams,
+  type DisconnectEventResponse,
 } from "./event";
 export { type CanvasConfig } from "./canvas";
 export { config } from "./config";
@@ -31,6 +34,7 @@ export {
   playerEq,
   removePlayerFromList,
   removePlayerKeepListOwned,
+  filterSessionsInState,
 } from "./session";
 export { not, isEmptyArr } from "./pure-util";
 export { validateName } from "./validate";

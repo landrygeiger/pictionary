@@ -1,20 +1,24 @@
+import * as E from "fp-ts/Either";
 import {
   CreateEventParams,
   CreateEventResponse,
   DRAW_EVENT,
+  DisconnectEventParams,
+  DisconnectEventResponse,
   DrawEventParams,
   JoinEventParams,
   JoinEventResponse,
-  Payload,
   Session,
-  createJWT,
+  filterSessionsInState,
   validateName,
 } from "@pictionary/shared";
 import { Socket } from "socket.io";
 import { StoreAPI } from "./store";
-import { pipe } from "fp-ts/lib/function";
+import { constVoid, pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/TaskEither";
-import { newSession, newSessionId, reduceSession } from "./session";
+import * as A from "fp-ts/Array";
+import { newSession, newSessionId, reduceSession } from "./session-state";
+import { getSessionsWithSocket, leaveSessions } from "./session-store";
 
 const broadcastToAllExceptSender =
   <Params>(event: string) =>
@@ -34,8 +38,10 @@ export const socketEventHandler =
   (socket: Socket) =>
   (sessionsAPI: StoreAPI<Session>) =>
   <Params, Response>(handler: EventHandler<Params, Response>) =>
-  async (params: Params, callback: (res: Response) => void) =>
-    callback(await handler(socket)(sessionsAPI)(params));
+  async (params: Params, callback: (res: Response) => void) => {
+    const result = await handler(socket)(sessionsAPI)(params);
+    callback && callback(result);
+  };
 
 export const handleCreateEvent: EventHandler<
   CreateEventParams,
@@ -45,7 +51,7 @@ export const handleCreateEvent: EventHandler<
     TE.Do,
     TE.bind("ownerName", () => TE.fromEither(validateName(params.ownerName))),
     TE.let("sessionId", () => newSessionId()),
-    TE.let("session", ({ ownerName }) => newSession(ownerName)),
+    TE.let("session", ({ ownerName }) => newSession(socket.id, ownerName)),
     TE.tap(({ sessionId, session }) => sessionsAPI.create(sessionId)(session)),
     TE.tap(({ sessionId }) => TE.right(socket.join(sessionId))),
     TE.tap(({ sessionId, ownerName }) =>
@@ -55,11 +61,7 @@ export const handleCreateEvent: EventHandler<
         )
       )
     ),
-    TE.let(
-      "payload",
-      ({ ownerName, sessionId }): Payload => ({ name: ownerName, sessionId })
-    ),
-    TE.map(({ payload }) => ({ token: createJWT(payload) }))
+    TE.map(({ sessionId }) => ({ sessionId }))
   )();
 
 export const handleJoinEvent: EventHandler<
@@ -71,7 +73,7 @@ export const handleJoinEvent: EventHandler<
     TE.bind("playerName", () => TE.fromEither(validateName(params.playerName))),
     TE.tap(({ playerName }) =>
       sessionsAPI.updateEither(params.sessionId)(
-        reduceSession({ kind: "join", playerName })
+        reduceSession({ kind: "join", playerName, socketId: socket.id })
       )
     ),
     TE.tap(() => TE.right(socket.join(params.sessionId))),
@@ -82,12 +84,24 @@ export const handleJoinEvent: EventHandler<
         )
       )
     ),
-    TE.let(
-      "payload",
-      ({ playerName }): Payload => ({
-        name: playerName,
-        sessionId: params.sessionId,
-      })
+    TE.map(constVoid)
+  )();
+
+export const handleDisconnectEvent: EventHandler<
+  DisconnectEventParams,
+  DisconnectEventResponse
+> = (socket) => (sessionsAPI) => (_) =>
+  pipe(
+    socket.id,
+    getSessionsWithSocket(sessionsAPI),
+    TE.flatMap(leaveSessions(sessionsAPI)(socket)),
+    TE.map(filterSessionsInState("ending")),
+    TE.map(A.map((session) => session.key)),
+    TE.flatMap(sessionsAPI.deleteMany),
+    TE.tap(() =>
+      TE.right(
+        console.log(`[Server]: Player with id ${socket.id} has disconnected.`)
+      )
     ),
-    TE.map(({ payload }) => ({ token: createJWT(payload) }))
+    TE.map(constVoid)
   )();

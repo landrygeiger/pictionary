@@ -1,4 +1,5 @@
 import * as TE from "fp-ts/TaskEither";
+import * as A from "fp-ts/Array";
 import * as IOE from "fp-ts/IOEither";
 import * as E from "fp-ts/Either";
 import { Mutex } from "async-mutex";
@@ -17,6 +18,8 @@ export type Store<T> = {
   data: Map<string, T>;
   mutex: Mutex;
 };
+
+export type WithKey<T> = T & { key: string };
 
 export const store = <T>(): Store<T> => ({
   data: new Map(),
@@ -68,6 +71,16 @@ const remove = <T>(store: Store<T>) =>
     IOE.tap((key) => IOE.of(store.data.delete(key)))
   );
 
+const removeMany = <T>(store: Store<T>) =>
+  flow(A.traverse(IOE.ApplicativeSeq)(remove(store)));
+
+const list = <T>(store: Store<T>) =>
+  IOE.right(
+    [...store.data.keys()].map(
+      (key): WithKey<T> => ({ ...(store.data.get(key) as T), key })
+    )
+  );
+
 const acquireMutex = <T>(store: Store<T>) =>
   TE.tryCatch(
     () => store.mutex.acquire(),
@@ -90,6 +103,10 @@ export type StoreAPI<T> = {
     updateFn: (a: T) => E.Either<E, T>
   ) => TE.TaskEither<E | MutexError | NotFoundError, T>;
   delete: (key: string) => TE.TaskEither<MutexError | NotFoundError, string>;
+  deleteMany: (
+    keys: string[]
+  ) => TE.TaskEither<MutexError | NotFoundError, string[]>;
+  list: () => TE.TaskEither<MutexError, WithKey<T>[]>;
 };
 
 export const storeAPI = <T>(store: Store<T>): StoreAPI<T> => ({
@@ -123,6 +140,18 @@ export const storeAPI = <T>(store: Store<T>): StoreAPI<T> => ({
     TE.bracketW(
       acquireMutex(store),
       () => TE.fromIOEither(remove(store)(key)),
+      releaseMutex
+    ),
+  deleteMany: (keys: string[]) =>
+    TE.bracketW(
+      acquireMutex(store),
+      () => TE.fromIOEither(removeMany(store)(keys)),
+      releaseMutex
+    ),
+  list: () =>
+    TE.bracketW(
+      acquireMutex(store),
+      () => TE.fromIOEither(list(store)),
       releaseMutex
     ),
 });

@@ -14,14 +14,14 @@ import { io } from 'socket.io-client';
 import { emitter } from '../util/socket-util';
 import { Subject } from 'rxjs';
 import * as E from 'fp-ts/Either';
-import { flow, pipe } from 'fp-ts/lib/function';
+import { constVoid, flow, pipe } from 'fp-ts/lib/function';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SocketService {
   private socket = isDevMode() ? io(`localhost:${config.serverPort}`) : io();
-  token?: string;
+  sessionId?: string;
 
   public drawEventSubject = new Subject<DrawEventParams>();
 
@@ -35,23 +35,27 @@ export class SocketService {
   private handleDrawEvent = (params: DrawEventParams) =>
     this.drawEventSubject.next(params);
 
-  private handleCreateAndJoinEventResponse: (
-    res: CreateEventResponse | JoinEventResponse
-  ) => void = E.match(flow(JSON.stringify, console.log), (res) => {
-    this.token = res.token;
-  });
+  private handleCreateEventResponse: (res: CreateEventResponse) => void =
+    E.match(flow(JSON.stringify, console.log), (res) => {
+      this.sessionId = res.sessionId;
+    });
+
+  private handleJoinEventResponse: (res: JoinEventResponse) => void = E.match(
+    flow(JSON.stringify, console.log),
+    constVoid
+  );
 
   public emitDraw = emitter<DrawEventParams>(this.socket, DRAW_EVENT);
 
   public emitCreate = emitter<CreateEventParams>(
     this.socket,
     CREATE_EVENT,
-    this.handleCreateAndJoinEventResponse
+    this.handleCreateEventResponse
   );
 
   public emitJoin = emitter<JoinEventParams>(
     this.socket,
     JOIN_EVENT,
-    this.handleCreateAndJoinEventResponse
+    this.handleJoinEventResponse
   );
 }

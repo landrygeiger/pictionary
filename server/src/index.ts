@@ -4,6 +4,7 @@ import http from "http";
 import { Server } from "socket.io";
 import {
   CREATE_EVENT,
+  DISCONNECT_EVENT,
   DRAW_EVENT,
   JOIN_EVENT,
   Session,
@@ -11,12 +12,13 @@ import {
 } from "@pictionary/shared";
 import {
   handleCreateEvent,
+  handleDisconnectEvent,
   handleDrawEvent,
   handleJoinEvent,
   socketEventHandler,
 } from "./event-handler";
-import { store, storeAPI } from "./store";
 import "dotenv/config";
+import { sessionsAPI } from "./session-store";
 
 const app: Express = express();
 const port = config.serverPort || 3000;
@@ -32,9 +34,6 @@ const io = new Server(server, {
   },
 });
 
-const sessions = store<Session>();
-const sessionsAPI = storeAPI(sessions);
-
 app.use(
   "/",
   express.static(path.join(__dirname, "../../web-app/dist/web-app/browser/"))
@@ -48,10 +47,7 @@ io.on("connection", (socket) => {
   socket.on(DRAW_EVENT, handleDrawEvent(socket));
   socket.on(CREATE_EVENT, handler(handleCreateEvent));
   socket.on(JOIN_EVENT, handler(handleJoinEvent));
-
-  socket.on("disconnect", () =>
-    console.log(`[Server]: User with id ${socket.id} has disconnected.`)
-  );
+  socket.on(DISCONNECT_EVENT, handler(handleDisconnectEvent));
 });
 
 server.listen(port, () => {
