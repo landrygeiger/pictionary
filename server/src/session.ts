@@ -1,4 +1,10 @@
-import { Session, SessionError, not, sessionError } from "@pictionary/shared";
+import {
+  Session,
+  SessionError,
+  not,
+  notFoundError,
+  sessionError,
+} from "@pictionary/shared";
 import { match } from "ts-pattern";
 import * as E from "fp-ts/Either";
 import * as A from "fp-ts/Array";
@@ -30,6 +36,12 @@ const hasPlayer = (session: Session) => (playerName: string) =>
     A.exists((p) => p.name === playerName)
   );
 
+const getPlayer = (session: Session) => (playerName: string) =>
+  pipe(
+    session.players,
+    A.findFirst((p) => p.name === playerName)
+  );
+
 const addPlayer = (session: Session) =>
   flow(
     E.fromPredicate(not(hasPlayer(session)), () =>
@@ -43,7 +55,8 @@ const addPlayer = (session: Session) =>
 
 const removePlayer = (session: Session) =>
   flow(
-    E.fromPredicate(hasPlayer(session), () =>
+    getPlayer(session),
+    E.fromOption(() =>
       sessionError("A player with that name could not be found.")
     ),
     E.map((playerName) => ({

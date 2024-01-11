@@ -23,7 +23,12 @@ export {
   type ValidationError,
   validationError,
 } from "./error";
-export { type Session, type Player } from "./session";
+export {
+  type Session,
+  type Player,
+  type AbandonedSessionState,
+  type LobbySessionState,
+} from "./session";
 export { not } from "./pure-util";
 export { validateName } from "./validate";
 export { type Payload, createJWT } from "./token";
