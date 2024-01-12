@@ -63,7 +63,7 @@ export const updateEither =
       IOE.tap((newValue) => IOE.of(store.data.set(key, newValue)))
     );
 
-const remove = <T>(store: Store<T>) =>
+export const remove = <T>(store: Store<T>) =>
   flow(
     IOE.fromPredicate(store.data.has.bind(store.data), (key) =>
       notFoundError(`Key ${key} doesn't exist in store.`)
