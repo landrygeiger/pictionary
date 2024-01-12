@@ -71,7 +71,7 @@ export const remove = <T>(store: Store<T>) =>
     IOE.tap((key) => IOE.of(store.data.delete(key)))
   );
 
-const removeMany = <T>(store: Store<T>) =>
+export const removeMany = <T>(store: Store<T>) =>
   A.traverse(IOE.ApplicativeSeq)(remove(store));
 
 const list = <T>(store: Store<T>) =>
