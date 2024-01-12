@@ -37,5 +37,5 @@ export {
   filterSessionsInState,
 } from "./session";
 export { not, isEmptyArr } from "./pure-util";
-export { validateName } from "./validate";
+export { validateName, validateSessionId } from "./validate";
 export { type Payload, createJWT } from "./token";
