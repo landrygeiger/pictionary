@@ -26,7 +26,7 @@ export const store = <T>(): Store<T> => ({
   mutex: new Mutex(),
 });
 
-const create =
+export const create =
   <T>(store: Store<T>) =>
   (value: T) =>
     flow(
