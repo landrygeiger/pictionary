@@ -7,7 +7,7 @@ import { getSessionsWithSocket } from "../../src/session-store";
 describe("getSessionsWithSocket", () => {
   it("returns the sessions with the socket id", async () => {
     const socketId = "test-socket-id-to-be-found";
-    const ss: WithKey<Session>[] = [
+    const sessions: WithKey<Session>[] = [
       {
         key: "s1",
         players: [
@@ -49,7 +49,7 @@ describe("getSessionsWithSocket", () => {
     ];
 
     const sessionsAPIMock: Partial<StoreAPI<Session>> = {
-      list: jest.fn().mockReturnValueOnce(TE.right(ss)),
+      list: jest.fn().mockReturnValueOnce(TE.right(sessions)),
     };
 
     const result = await getSessionsWithSocket(
@@ -57,8 +57,8 @@ describe("getSessionsWithSocket", () => {
     )(socketId)();
 
     const expected: E.Either<never, WithKey<Session>[]> = E.right([
-      ss[1],
-      ss[2],
+      sessions[1],
+      sessions[2],
     ]);
 
     expect(result).toEqual(expected);
@@ -66,7 +66,7 @@ describe("getSessionsWithSocket", () => {
 
   it("returns empty list when no sessions have the socket", async () => {
     const socketId = "test-socket-id-to-be-found";
-    const ss: WithKey<Session>[] = [
+    const sessions: WithKey<Session>[] = [
       {
         key: "s1",
         players: [
@@ -108,7 +108,7 @@ describe("getSessionsWithSocket", () => {
     ];
 
     const sessionsAPIMock: Partial<StoreAPI<Session>> = {
-      list: jest.fn().mockReturnValueOnce(TE.right(ss)),
+      list: jest.fn().mockReturnValueOnce(TE.right(sessions)),
     };
 
     const result = await getSessionsWithSocket(

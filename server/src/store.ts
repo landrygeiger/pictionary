@@ -72,7 +72,7 @@ const remove = <T>(store: Store<T>) =>
   );
 
 const removeMany = <T>(store: Store<T>) =>
-  flow(A.traverse(IOE.ApplicativeSeq)(remove(store)));
+  A.traverse(IOE.ApplicativeSeq)(remove(store));
 
 const list = <T>(store: Store<T>) =>
   IOE.right(
