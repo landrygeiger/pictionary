@@ -36,7 +36,7 @@ export const create =
       IOE.tap((key) => IOE.of(store.data.set(key, value)))
     );
 
-const read = <T>(store: Store<T>) =>
+export const read = <T>(store: Store<T>) =>
   IOE.liftNullable(store.data.get.bind(store.data), (key) =>
     notFoundError(`Key ${key} doesn't exist in store.`)
   );
