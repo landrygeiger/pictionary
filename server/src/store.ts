@@ -52,7 +52,7 @@ export const update =
       IOE.tap((newValue) => IOE.of(store.data.set(key, newValue)))
     );
 
-const updateEither =
+export const updateEither =
   <T, E>(store: Store<T>) =>
   (updateFn: (a: T) => E.Either<E, T>) =>
   (key: string) =>
