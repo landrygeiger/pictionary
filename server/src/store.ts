@@ -41,7 +41,7 @@ export const read = <T>(store: Store<T>) =>
     notFoundError(`Key ${key} doesn't exist in store.`)
   );
 
-const update =
+export const update =
   <T>(store: Store<T>) =>
   (updateFn: (a: T) => T) =>
   (key: string) =>
