@@ -15,9 +15,22 @@ const isSocketIdInSession = (socketId: string) => (session: Session) =>
     A.exists((p) => p.socketId === socketId)
   );
 
+const sessionEntryToWithKey = (entry: [string, Session]): WithKey<Session> => ({
+  ...entry[1],
+  key: entry[0],
+});
+
+export const sessionWithKeyToEntry = (
+  session: WithKey<Session>
+): [string, Session] => [session.key, session];
+
 export const getSessionsWithSocket =
   (sessionsAPI: StoreAPI<Session>) => (socketId: string) =>
-    pipe(sessionsAPI.list(), TE.map(A.filter(isSocketIdInSession(socketId))));
+    pipe(
+      sessionsAPI.list(),
+      TE.map(A.map(sessionEntryToWithKey)),
+      TE.map(A.filter(isSocketIdInSession(socketId)))
+    );
 
 const leaveSession =
   (sessionsAPI: StoreAPI<Session>) =>

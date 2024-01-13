@@ -2,7 +2,10 @@ import { Session } from "@pictionary/shared";
 import * as E from "fp-ts/Either";
 import * as TE from "fp-ts/TaskEither";
 import { StoreAPI, WithKey } from "../../src/store";
-import { getSessionsWithSocket } from "../../src/session-store";
+import {
+  getSessionsWithSocket,
+  sessionWithKeyToEntry,
+} from "../../src/session-store";
 
 describe("getSessionsWithSocket", () => {
   it("returns the sessions with the socket id", async () => {
@@ -49,7 +52,9 @@ describe("getSessionsWithSocket", () => {
     ];
 
     const sessionsAPIMock: Partial<StoreAPI<Session>> = {
-      list: jest.fn().mockReturnValueOnce(TE.right(sessions)),
+      list: jest
+        .fn()
+        .mockReturnValueOnce(TE.right(sessions.map(sessionWithKeyToEntry))),
     };
 
     const result = await getSessionsWithSocket(
@@ -108,7 +113,9 @@ describe("getSessionsWithSocket", () => {
     ];
 
     const sessionsAPIMock: Partial<StoreAPI<Session>> = {
-      list: jest.fn().mockReturnValueOnce(TE.right(sessions)),
+      list: jest
+        .fn()
+        .mockReturnValueOnce(TE.right(sessions.map(sessionWithKeyToEntry))),
     };
 
     const result = await getSessionsWithSocket(

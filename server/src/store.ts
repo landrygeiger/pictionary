@@ -74,12 +74,8 @@ export const remove = <T>(store: Store<T>) =>
 export const removeMany = <T>(store: Store<T>) =>
   A.traverse(IOE.ApplicativeSeq)(remove(store));
 
-const list = <T>(store: Store<T>) =>
-  IOE.right(
-    [...store.data.keys()].map(
-      (key): WithKey<T> => ({ ...(store.data.get(key) as T), key })
-    )
-  );
+export const list = <T>(store: Store<T>) =>
+  IOE.right([...store.data.entries()]);
 
 const acquireMutex = <T>(store: Store<T>) =>
   TE.tryCatch(
@@ -106,7 +102,7 @@ export type StoreAPI<T> = {
   deleteMany: (
     keys: string[]
   ) => TE.TaskEither<MutexError | NotFoundError, string[]>;
-  list: () => TE.TaskEither<MutexError, WithKey<T>[]>;
+  list: () => TE.TaskEither<MutexError, [string, T][]>;
 };
 
 export const storeAPI = <T>(store: Store<T>): StoreAPI<T> => ({
