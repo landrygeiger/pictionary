@@ -4,6 +4,7 @@ import {
   JoinEventParams,
   Session,
   ValidationError,
+  WithId,
   config,
   validationError,
 } from "@pictionary/shared";
@@ -81,7 +82,8 @@ describe("handleJoinEvent", () => {
       params,
     );
 
-    const expected: E.Either<never, Session> = E.right({
+    const expected: E.Either<never, WithId<Session>> = E.right({
+      id: expect.any(String) as any,
       state: "lobby",
       players: [
         { name: "test-player-2", owner: true, socketId: "test-socket-id-2" },

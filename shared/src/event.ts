@@ -9,6 +9,8 @@ import { Point } from "./point";
 import * as E from "fp-ts/Either";
 import { Session } from "./session";
 
+export type WithId<T> = { id: string } & T;
+
 export const DRAW_EVENT = "draw" as const;
 
 export type DrawEventParams = {
@@ -26,7 +28,7 @@ export type CreateEventParams = {
 
 export type CreateEventResponse = E.Either<
   MutexError | ValidationError | AlreadyExistsError,
-  Session
+  WithId<Session>
 >;
 
 export const JOIN_EVENT = "join" as const;
@@ -38,7 +40,7 @@ export type JoinEventParams = {
 
 export type JoinEventResponse = E.Either<
   MutexError | ValidationError | NotFoundError | SessionError,
-  Session
+  WithId<Session>
 >;
 
 export const DISCONNECT_EVENT = "disconnect" as const;
