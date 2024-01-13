@@ -16,7 +16,7 @@ import { io } from "socket.io-client";
 import { emitter } from "../util/socket-util";
 import { Subject } from "rxjs";
 import * as E from "fp-ts/Either";
-import { constVoid, flow } from "fp-ts/lib/function";
+import { flow } from "fp-ts/lib/function";
 
 @Injectable({
   providedIn: "root",
