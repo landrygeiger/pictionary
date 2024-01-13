@@ -1,0 +1,19 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  "extends": ["eslint:recommended"],
+  "ignorePatterns": ["**/dist*", "**/*.js", "**/*.test.ts", "**/*.spec.ts"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint", "typescript"],
+  "rules": {
+    "no-unused-vars": "off", // Disable normal checking, keep typescript checking
+    "@typescript-eslint/no-unused-vars": "error"
+  }
+}
