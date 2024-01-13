@@ -9,6 +9,7 @@ import {
   JoinEventParams,
   JoinEventResponse,
   Session,
+  WithId,
   config,
 } from "@pictionary/shared";
 import { io } from "socket.io-client";
@@ -22,7 +23,7 @@ import { constVoid, flow } from "fp-ts/lib/function";
 })
 export class SocketService {
   private socket = isDevMode() ? io(`localhost:${config.serverPort}`) : io();
-  session?: Session;
+  session?: WithId<Session>;
 
   public drawEventSubject = new Subject<DrawEventParams>();
 

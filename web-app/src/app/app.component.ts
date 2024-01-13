@@ -3,6 +3,7 @@ import { CommonModule } from "@angular/common";
 import { RouterOutlet } from "@angular/router";
 import { RoomSelectorComponent } from "./room-selector/room-selector.component";
 import { GameViewComponent } from "./game-view/game-view.component";
+import { SocketService } from "./socket.service";
 
 @Component({
   selector: "app-root",
@@ -18,4 +19,5 @@ import { GameViewComponent } from "./game-view/game-view.component";
 })
 export class AppComponent {
   title = "web-app";
+  constructor(public socketService: SocketService) {}
 }

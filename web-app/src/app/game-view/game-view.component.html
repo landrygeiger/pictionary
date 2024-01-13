@@ -1,2 +1,5 @@
-<h1>{{ socketService.session || "Create or join a session to play!" }}</h1>
+<h1>
+  {{ this.getStatusMessage() || "Not currently playing..." }}
+</h1>
+<p *ngIf="socketService.session">Session Id: {{ socketService.session.id }}</p>
 <app-canvas></app-canvas>
