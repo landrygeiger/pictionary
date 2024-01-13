@@ -15,7 +15,7 @@ import { removePlayerKeepListOwned } from "@pictionary/shared/dist/session";
 
 export const newSession = (
   ownerSocketId: string,
-  ownerName: string
+  ownerName: string,
 ): Session => ({
   state: "lobby",
   players: [{ socketId: ownerSocketId, name: ownerName, owner: true }],
@@ -45,37 +45,37 @@ type LeaveAction = {
 const hasPlayerWithName = (session: Session) => (playerName: string) =>
   pipe(
     session.players,
-    A.exists((p) => p.name === playerName)
+    A.exists(p => p.name === playerName),
   );
 
 const hasPlayerWithSocket = (session: Session) => (socketId: string) =>
   pipe(
     session.players,
-    A.exists((p) => p.socketId === socketId)
+    A.exists(p => p.socketId === socketId),
   );
 
 const getPlayerBySocketId = (session: Session) => (socketId: string) =>
   pipe(
     session.players,
-    A.findFirst((p) => p.socketId === socketId),
+    A.findFirst(p => p.socketId === socketId),
     E.fromOption(() =>
-      sessionError("A player with that socket id could not be found.")
-    )
+      sessionError("A player with that socket id could not be found."),
+    ),
   );
 
 export const performAddPlayer = (session: Session) => (socketId: string) =>
   flow(
     E.fromPredicate(not(hasPlayerWithName(session)), () =>
-      sessionError("That name is already in use.")
+      sessionError("That name is already in use."),
     ),
     E.filterOrElse(
       () => !hasPlayerWithSocket(session)(socketId),
-      () => sessionError("That socket is already in the session.")
+      () => sessionError("That socket is already in the session."),
     ),
-    E.map((playerName) => ({
+    E.map(playerName => ({
       ...session,
       players: [...session.players, newPlayer(socketId, playerName)],
-    }))
+    })),
   );
 
 export const performRemovePlayer = (session: Session) =>
@@ -87,27 +87,27 @@ export const performRemovePlayer = (session: Session) =>
         ...session,
         players,
         state: isEmptyArr(players) ? "ending" : session.state,
-      })
-    )
+      }),
+    ),
   );
 
 const handleJoinAction = (session: Session) => (action: JoinAction) =>
   match(session)
     .with({ state: "lobby" }, () =>
-      performAddPlayer(session)(action.socketId)(action.playerName)
+      performAddPlayer(session)(action.socketId)(action.playerName),
     )
     .with({ state: "ending" }, () =>
-      E.left(sessionError("An ending session cannot be joined."))
+      E.left(sessionError("An ending session cannot be joined.")),
     )
     .exhaustive();
 
 const handleLeaveAction = (session: Session) => (action: LeaveAction) =>
   match(session)
     .with({ state: "lobby" }, () =>
-      performRemovePlayer(session)(action.socketId)
+      performRemovePlayer(session)(action.socketId),
     )
     .with({ state: "ending" }, () =>
-      E.left(sessionError("An ending session cannot be left."))
+      E.left(sessionError("An ending session cannot be left.")),
     )
     .exhaustive();
 

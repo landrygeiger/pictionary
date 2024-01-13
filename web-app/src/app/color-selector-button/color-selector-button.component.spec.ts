@@ -1,23 +1,22 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ColorSelectorButtonComponent } from './color-selector-button.component';
+import { ColorSelectorButtonComponent } from "./color-selector-button.component";
 
-describe('ColorSelectorButtonComponent', () => {
+describe("ColorSelectorButtonComponent", () => {
   let component: ColorSelectorButtonComponent;
   let fixture: ComponentFixture<ColorSelectorButtonComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ColorSelectorButtonComponent]
-    })
-    .compileComponents();
-    
+      imports: [ColorSelectorButtonComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(ColorSelectorButtonComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

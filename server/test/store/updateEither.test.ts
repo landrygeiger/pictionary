@@ -14,7 +14,7 @@ describe("updateEither", () => {
     const result = updateEither(numberStore)(f)(key)();
 
     const expected: E.Either<NotFoundError, never> = E.left(
-      notFoundError(`Key ${key} doesn't exist in store.`)
+      notFoundError(`Key ${key} doesn't exist in store.`),
     );
 
     expect(result).toEqual(expected);
@@ -31,9 +31,9 @@ describe("updateEither", () => {
     const incrEvens = flow(
       E.fromPredicate(
         (n: number) => n % 2 === 0,
-        () => "error!"
+        () => "error!",
       ),
-      E.map(increment)
+      E.map(increment),
     );
 
     const result = updateEither(numberStore)(incrEvens)(key)();
@@ -54,9 +54,9 @@ describe("updateEither", () => {
     const incrEvens = flow(
       E.fromPredicate(
         (n: number) => n % 2 === 0,
-        () => "error!"
+        () => "error!",
       ),
-      E.map(increment)
+      E.map(increment),
     );
 
     const result = updateEither(numberStore)(incrEvens)(key)();

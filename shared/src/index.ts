@@ -38,4 +38,3 @@ export {
 } from "./session";
 export { not, isEmptyArr } from "./pure-util";
 export { validateName, validateSessionId } from "./validate";
-export { type Payload, createJWT } from "./token";

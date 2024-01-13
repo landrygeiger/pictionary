@@ -23,13 +23,13 @@ describe("handleJoinEvent", () => {
     const sessionsAPIMock: Partial<StoreAPI<Session>> = {};
 
     const result = await handleJoinEvent(socketMock as Socket)(
-      sessionsAPIMock as StoreAPI<Session>
+      sessionsAPIMock as StoreAPI<Session>,
     )(params);
 
     const expected: E.Either<ValidationError, never> = E.left(
       validationError(
-        `Names must be less than ${config.maxNameLength} characters long.`
-      )
+        `Names must be less than ${config.maxNameLength} characters long.`,
+      ),
     );
 
     expect(result).toEqual(expected);
@@ -46,11 +46,11 @@ describe("handleJoinEvent", () => {
     const sessionsAPIMock: Partial<StoreAPI<Session>> = {};
 
     const result = await handleJoinEvent(socketMock as Socket)(
-      sessionsAPIMock as StoreAPI<Session>
+      sessionsAPIMock as StoreAPI<Session>,
     )(params);
 
     const expected: E.Either<ValidationError, never> = E.left(
-      validationError("Session ids must not be empty.")
+      validationError("Session ids must not be empty."),
     );
 
     expect(result).toEqual(expected);

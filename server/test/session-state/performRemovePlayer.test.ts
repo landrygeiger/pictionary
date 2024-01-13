@@ -108,7 +108,7 @@ describe("performRemovePlayer", () => {
     const result = performRemovePlayer(s)(socketId);
 
     const expected: E.Either<SessionError, never> = E.left(
-      sessionError("A player with that socket id could not be found.")
+      sessionError("A player with that socket id could not be found."),
     );
 
     expect(result).toEqual(expected);

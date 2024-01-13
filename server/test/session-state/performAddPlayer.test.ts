@@ -44,7 +44,7 @@ describe("performAddPlayer", () => {
     const result = performAddPlayer(s)(socketId)(playerName);
 
     const expected: E.Either<SessionError, never> = E.left(
-      sessionError("That name is already in use.")
+      sessionError("That name is already in use."),
     );
 
     expect(result).toEqual(expected);
@@ -65,7 +65,7 @@ describe("performAddPlayer", () => {
     const result = performAddPlayer(s)(socketId)(playerName);
 
     const expected: E.Either<SessionError, never> = E.left(
-      sessionError("That socket is already in the session.")
+      sessionError("That socket is already in the session."),
     );
 
     expect(result).toEqual(expected);

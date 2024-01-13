@@ -41,13 +41,13 @@ export const promoteFirstPlayer = (ps: Player[]) => [
     A.head,
     O.match(
       () => [],
-      (p) => [promotePlayer(p)]
-    )
+      p => [promotePlayer(p)],
+    ),
   ),
   ...pipe(
     ps,
     A.tail,
-    O.match(() => [], identity)
+    O.match(() => [], identity),
   ),
 ];
 
@@ -55,7 +55,7 @@ export const removePlayerKeepListOwned = (ps: Player[]) => (p: Player) =>
   pipe(
     p,
     flip(removePlayerFromList)(ps),
-    p.owner ? promoteFirstPlayer : identity
+    p.owner ? promoteFirstPlayer : identity,
   );
 
 export const filterSessionsInState = (state: (typeof states)[number]) =>

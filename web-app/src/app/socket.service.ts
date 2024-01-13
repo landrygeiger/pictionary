@@ -1,4 +1,4 @@
-import { Injectable, isDevMode } from '@angular/core';
+import { Injectable, isDevMode } from "@angular/core";
 import {
   CREATE_EVENT,
   CreateEventParams,
@@ -9,15 +9,15 @@ import {
   JoinEventParams,
   JoinEventResponse,
   config,
-} from '@pictionary/shared';
-import { io } from 'socket.io-client';
-import { emitter } from '../util/socket-util';
-import { Subject } from 'rxjs';
-import * as E from 'fp-ts/Either';
-import { constVoid, flow, pipe } from 'fp-ts/lib/function';
+} from "@pictionary/shared";
+import { io } from "socket.io-client";
+import { emitter } from "../util/socket-util";
+import { Subject } from "rxjs";
+import * as E from "fp-ts/Either";
+import { constVoid, flow, pipe } from "fp-ts/lib/function";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class SocketService {
   private socket = isDevMode() ? io(`localhost:${config.serverPort}`) : io();
@@ -26,7 +26,7 @@ export class SocketService {
   public drawEventSubject = new Subject<DrawEventParams>();
 
   constructor() {
-    this.socket.on('connect', this.handleConnectEvent);
+    this.socket.on("connect", this.handleConnectEvent);
     this.socket.on(DRAW_EVENT, this.handleDrawEvent);
   }
 
@@ -36,13 +36,13 @@ export class SocketService {
     this.drawEventSubject.next(params);
 
   private handleCreateEventResponse: (res: CreateEventResponse) => void =
-    E.match(flow(JSON.stringify, console.log), (res) => {
+    E.match(flow(JSON.stringify, console.log), res => {
       this.sessionId = res.sessionId;
     });
 
   private handleJoinEventResponse: (res: JoinEventResponse) => void = E.match(
     flow(JSON.stringify, console.log),
-    constVoid
+    constVoid,
   );
 
   public emitDraw = emitter<DrawEventParams>(this.socket, DRAW_EVENT);
@@ -50,12 +50,12 @@ export class SocketService {
   public emitCreate = emitter<CreateEventParams>(
     this.socket,
     CREATE_EVENT,
-    this.handleCreateEventResponse
+    this.handleCreateEventResponse,
   );
 
   public emitJoin = emitter<JoinEventParams>(
     this.socket,
     JOIN_EVENT,
-    this.handleJoinEventResponse
+    this.handleJoinEventResponse,
   );
 }

@@ -58,7 +58,7 @@ describe("getSessionsWithSocket", () => {
     };
 
     const result = await getSessionsWithSocket(
-      sessionsAPIMock as StoreAPI<Session>
+      sessionsAPIMock as StoreAPI<Session>,
     )(socketId)();
 
     const expected: E.Either<never, WithKey<Session>[]> = E.right([
@@ -119,7 +119,7 @@ describe("getSessionsWithSocket", () => {
     };
 
     const result = await getSessionsWithSocket(
-      sessionsAPIMock as StoreAPI<Session>
+      sessionsAPIMock as StoreAPI<Session>,
     )(socketId)();
 
     const expected: E.Either<never, WithKey<Session>[]> = E.right([]);

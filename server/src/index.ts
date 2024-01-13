@@ -36,10 +36,10 @@ const io = new Server(server, {
 
 app.use(
   "/",
-  express.static(path.join(__dirname, "../../web-app/dist/web-app/browser/"))
+  express.static(path.join(__dirname, "../../web-app/dist/web-app/browser/")),
 );
 
-io.on("connection", (socket) => {
+io.on("connection", socket => {
   console.log(`[Server]: User with id ${socket.id} has connected.`);
 
   const handler = socketEventHandler(socket)(sessionsAPI);

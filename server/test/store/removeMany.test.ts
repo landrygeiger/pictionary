@@ -16,7 +16,7 @@ describe("removeMany", () => {
     const result = removeMany(numberStore)(keys)();
 
     const expected: E.Either<NotFoundError, never> = E.left(
-      notFoundError("Key not-in-store doesn't exist in store.")
+      notFoundError("Key not-in-store doesn't exist in store."),
     );
 
     expect(result).toEqual(expected);
@@ -33,7 +33,7 @@ describe("removeMany", () => {
       ["five", 6],
     ];
 
-    entries.forEach((entry) => numberStore.data.set(entry[0], entry[1]));
+    entries.forEach(entry => numberStore.data.set(entry[0], entry[1]));
 
     const toRemove = ["one", "three", "four"];
 
