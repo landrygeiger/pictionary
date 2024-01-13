@@ -32,7 +32,7 @@ export const handleDrawEvent =
   broadcastToAllExceptSender<DrawEventParams>(DRAW_EVENT);
 
 type EventHandler<Params, Response> = (
-  socket: Socket
+  socket: Socket,
 ) => (sessionsAPI: StoreAPI<Session>) => (params: Params) => Promise<Response>;
 
 export const socketEventHandler =
@@ -47,7 +47,7 @@ export const socketEventHandler =
 export const handleCreateEvent: EventHandler<
   CreateEventParams,
   CreateEventResponse
-> = (socket) => (sessionsAPI) => (params) =>
+> = socket => sessionsAPI => params =>
   pipe(
     TE.Do,
     TE.bind("ownerName", () => TE.fromEither(validateName(params.ownerName))),
@@ -58,54 +58,54 @@ export const handleCreateEvent: EventHandler<
     TE.tap(({ sessionId, ownerName }) =>
       TE.right(
         console.log(
-          `[Server]: Created session with id ${sessionId} and owner ${ownerName}.`
-        )
-      )
+          `[Server]: Created session with id ${sessionId} and owner ${ownerName}.`,
+        ),
+      ),
     ),
-    TE.map(({ sessionId }) => ({ sessionId }))
+    TE.map(({ sessionId }) => ({ sessionId })),
   )();
 
 export const handleJoinEvent: EventHandler<
   JoinEventParams,
   JoinEventResponse
-> = (socket) => (sessionsAPI) => (params) =>
+> = socket => sessionsAPI => params =>
   pipe(
     TE.Do,
     TE.bind("playerName", () => TE.fromEither(validateName(params.playerName))),
     TE.bind("sessionId", () =>
-      TE.fromEither(validateSessionId(params.sessionId))
+      TE.fromEither(validateSessionId(params.sessionId)),
     ),
     TE.tap(({ playerName, sessionId }) =>
       sessionsAPI.updateEither(sessionId)(
-        reduceSession({ kind: "join", playerName, socketId: socket.id })
-      )
+        reduceSession({ kind: "join", playerName, socketId: socket.id }),
+      ),
     ),
     TE.tap(({ sessionId }) => TE.right(socket.join(sessionId))),
     TE.tap(({ playerName, sessionId }) =>
       TE.right(
         console.log(
-          `[Server]: Player ${playerName} joined session with id ${sessionId}.`
-        )
-      )
+          `[Server]: Player ${playerName} joined session with id ${sessionId}.`,
+        ),
+      ),
     ),
-    TE.map(constVoid)
+    TE.map(constVoid),
   )();
 
 export const handleDisconnectEvent: EventHandler<
   DisconnectEventParams,
   DisconnectEventResponse
-> = (socket) => (sessionsAPI) => (_) =>
+> = socket => sessionsAPI => _ =>
   pipe(
     socket.id,
     getSessionsWithSocket(sessionsAPI),
     TE.flatMap(leaveSessions(sessionsAPI)(socket)),
     TE.map(filterSessionsInState("ending")),
-    TE.map(A.map((session) => session.key)),
+    TE.map(A.map(session => session.key)),
     TE.flatMap(sessionsAPI.deleteMany),
     TE.tap(() =>
       TE.right(
-        console.log(`[Server]: Player with id ${socket.id} has disconnected.`)
-      )
+        console.log(`[Server]: Player with id ${socket.id} has disconnected.`),
+      ),
     ),
-    TE.map(constVoid)
+    TE.map(constVoid),
   )();

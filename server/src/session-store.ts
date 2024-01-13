@@ -12,7 +12,7 @@ export const sessionsAPI = storeAPI(sessions);
 const isSocketIdInSession = (socketId: string) => (session: Session) =>
   pipe(
     session.players,
-    A.exists((p) => p.socketId === socketId)
+    A.exists(p => p.socketId === socketId),
   );
 
 const sessionEntryToWithKey = (entry: [string, Session]): WithKey<Session> => ({
@@ -21,7 +21,7 @@ const sessionEntryToWithKey = (entry: [string, Session]): WithKey<Session> => ({
 });
 
 export const sessionWithKeyToEntry = (
-  session: WithKey<Session>
+  session: WithKey<Session>,
 ): [string, Session] => [session.key, session];
 
 export const getSessionsWithSocket =
@@ -29,7 +29,7 @@ export const getSessionsWithSocket =
     pipe(
       sessionsAPI.list(),
       TE.map(A.map(sessionEntryToWithKey)),
-      TE.map(A.filter(isSocketIdInSession(socketId)))
+      TE.map(A.filter(isSocketIdInSession(socketId))),
     );
 
 const leaveSession =
@@ -38,14 +38,14 @@ const leaveSession =
   (session: WithKey<Session>) =>
     pipe(
       sessionsAPI.updateEither(session.key)(
-        reduceSession({ kind: "leave", socketId: socket.id })
+        reduceSession({ kind: "leave", socketId: socket.id }),
       ),
       TE.map(
         (updatedSession): WithKey<Session> => ({
           ...updatedSession,
           key: session.key,
-        })
-      )
+        }),
+      ),
     );
 
 export const leaveSessions =

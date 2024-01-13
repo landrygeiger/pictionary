@@ -13,7 +13,7 @@ describe("list", () => {
       ["five", 6],
     ];
 
-    entries.forEach((entry) => numberStore.data.set(entry[0], entry[1]));
+    entries.forEach(entry => numberStore.data.set(entry[0], entry[1]));
 
     const result = list(numberStore)();
 

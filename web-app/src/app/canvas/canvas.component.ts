@@ -4,56 +4,56 @@ import {
   ElementRef,
   Input,
   ViewChild,
-} from '@angular/core';
+} from "@angular/core";
 import {
   CanvasConfig,
   Point,
   relativeMousePosFromEvent,
-} from '@pictionary/shared';
-import { fromEvent, pairwise, switchMap, takeUntil } from 'rxjs';
-import { SocketService } from '../socket.service';
-import { CanvasConfigSelectorComponent } from '../canvas-config-selector/canvas-config-selector.component';
+} from "@pictionary/shared";
+import { fromEvent, pairwise, switchMap, takeUntil } from "rxjs";
+import { SocketService } from "../socket.service";
+import { CanvasConfigSelectorComponent } from "../canvas-config-selector/canvas-config-selector.component";
 
 @Component({
-  selector: 'app-canvas',
+  selector: "app-canvas",
   standalone: true,
   imports: [CanvasConfigSelectorComponent],
-  templateUrl: './canvas.component.html',
-  styleUrl: './canvas.component.css',
+  templateUrl: "./canvas.component.html",
+  styleUrl: "./canvas.component.css",
 })
 export class CanvasComponent implements AfterViewInit {
   @Input() width = 600;
   @Input() height = 400;
 
-  @ViewChild('canvasRef')
+  @ViewChild("canvasRef")
   canvas!: ElementRef<HTMLCanvasElement>;
   context!: CanvasRenderingContext2D | null;
 
-  config: CanvasConfig = { color: '#000', lineWidth: 5 };
+  config: CanvasConfig = { color: "#000", lineWidth: 5 };
 
   constructor(public socketService: SocketService) {}
 
   public ngAfterViewInit() {
     const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
-    this.context = canvasEl.getContext('2d');
+    this.context = canvasEl.getContext("2d");
 
-    this.socketService.drawEventSubject.subscribe((drawEventParams) =>
+    this.socketService.drawEventSubject.subscribe(drawEventParams =>
       this.draw(
         drawEventParams.start,
         drawEventParams.end,
         drawEventParams.color,
-        drawEventParams.lineWidth
-      )
+        drawEventParams.lineWidth,
+      ),
     );
 
-    fromEvent<MouseEvent>(canvasEl, 'mousedown')
+    fromEvent<MouseEvent>(canvasEl, "mousedown")
       .pipe(
         switchMap(() =>
-          fromEvent<MouseEvent>(canvasEl, 'mousemove').pipe(
-            takeUntil(fromEvent<MouseEvent>(canvasEl, 'mouseup')),
-            pairwise()
-          )
-        )
+          fromEvent<MouseEvent>(canvasEl, "mousemove").pipe(
+            takeUntil(fromEvent<MouseEvent>(canvasEl, "mouseup")),
+            pairwise(),
+          ),
+        ),
       )
       .subscribe((res: [MouseEvent, MouseEvent]) => {
         const prevPos = relativeMousePosFromEvent(res[0], canvasEl);
@@ -62,7 +62,7 @@ export class CanvasComponent implements AfterViewInit {
           prevPos,
           currentPos,
           this.config.color,
-          this.config.lineWidth
+          this.config.lineWidth,
         );
         this.socketService.emitDraw({
           start: prevPos,
@@ -77,13 +77,13 @@ export class CanvasComponent implements AfterViewInit {
     prevPos: Point,
     currentPos: Point,
     color: string,
-    lineWidth: number
+    lineWidth: number,
   ) {
     if (!this.context) return;
 
     this.context.strokeStyle = color;
     this.context.lineWidth = lineWidth;
-    this.context.lineCap = 'round';
+    this.context.lineCap = "round";
 
     this.context.beginPath();
     this.context.moveTo(prevPos.x, prevPos.y);

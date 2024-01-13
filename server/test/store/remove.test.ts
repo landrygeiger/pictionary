@@ -12,7 +12,7 @@ describe("remove", () => {
     const result = remove(numberStore)(key)();
 
     const expected: E.Either<NotFoundError, never> = E.left(
-      notFoundError(`Key ${key} doesn't exist in store.`)
+      notFoundError(`Key ${key} doesn't exist in store.`),
     );
 
     expect(result).toEqual(expected);

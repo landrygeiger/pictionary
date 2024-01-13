@@ -13,7 +13,7 @@ describe("create", () => {
     const result = create(numberStore)(27)(key)();
 
     const expected: E.Either<AlreadyExistsError, never> = E.left(
-      alreadyExistsError(`Key ${key} already exists in store.`)
+      alreadyExistsError(`Key ${key} already exists in store.`),
     );
 
     expect(result).toEqual(expected);

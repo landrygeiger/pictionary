@@ -22,13 +22,13 @@ describe("handleCreateEvent", () => {
     const sessionsAPIMock: Partial<StoreAPI<Session>> = {};
 
     const result = await handleCreateEvent(socketMock as Socket)(
-      sessionsAPIMock as StoreAPI<Session>
+      sessionsAPIMock as StoreAPI<Session>,
     )(params);
 
     const expected: E.Either<ValidationError, never> = E.left(
       validationError(
-        `Names must be less than ${config.maxNameLength} characters long.`
-      )
+        `Names must be less than ${config.maxNameLength} characters long.`,
+      ),
     );
 
     expect(result).toEqual(expected);
@@ -47,7 +47,7 @@ describe("handleCreateEvent", () => {
     const sessionStore = store<Session>();
 
     await handleCreateEvent(socketMock as Socket)(storeAPI(sessionStore))(
-      params
+      params,
     );
 
     const sessions = [...sessionStore.data.entries()];
@@ -83,7 +83,7 @@ describe("handleCreateEvent", () => {
     const sessionStore = store<Session>();
 
     await handleCreateEvent(socketMock as Socket)(storeAPI(sessionStore))(
-      params
+      params,
     );
 
     expect(socketMock.join).toBeCalledWith(expect.any(String));

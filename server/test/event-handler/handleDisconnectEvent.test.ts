@@ -57,7 +57,7 @@ describe("handleDisconnectEvent", () => {
     const sessionStore = store<Session>();
     const sessionsAPI = storeAPI(sessionStore);
 
-    sessions.forEach((s) => sessionStore.data.set(s[0], s[1]));
+    sessions.forEach(s => sessionStore.data.set(s[0], s[1]));
 
     await handleDisconnectEvent(socketMock as Socket)(sessionsAPI)(params);
 
@@ -151,7 +151,7 @@ describe("handleDisconnectEvent", () => {
     const sessionStore = store<Session>();
     const sessionsAPI = storeAPI(sessionStore);
 
-    sessions.forEach((s) => sessionStore.data.set(s[0], s[1]));
+    sessions.forEach(s => sessionStore.data.set(s[0], s[1]));
 
     await handleDisconnectEvent(socketMock as Socket)(sessionsAPI)(params);
 

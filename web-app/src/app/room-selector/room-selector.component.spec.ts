@@ -1,23 +1,22 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { RoomSelectorComponent } from './room-selector.component';
+import { RoomSelectorComponent } from "./room-selector.component";
 
-describe('RoomSelectorComponent', () => {
+describe("RoomSelectorComponent", () => {
   let component: RoomSelectorComponent;
   let fixture: ComponentFixture<RoomSelectorComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RoomSelectorComponent]
-    })
-    .compileComponents();
-    
+      imports: [RoomSelectorComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(RoomSelectorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

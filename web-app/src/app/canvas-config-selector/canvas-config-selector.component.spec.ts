@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CanvasConfigSelectorComponent } from './canvas-config-selector.component';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { CanvasConfigSelectorComponent } from "./canvas-config-selector.component";
 
-describe('CanvasConfigSelectorComponent', () => {
+describe("CanvasConfigSelectorComponent", () => {
   let component: CanvasConfigSelectorComponent;
   let fixture: ComponentFixture<CanvasConfigSelectorComponent>;
 
@@ -15,7 +15,7 @@ describe('CanvasConfigSelectorComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

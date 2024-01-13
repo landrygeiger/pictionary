@@ -30,15 +30,15 @@ export const create =
   <T>(store: Store<T>) =>
   (value: T) =>
     flow(
-      IOE.fromPredicate(not(store.data.has.bind(store.data)), (key) =>
-        alreadyExistsError(`Key ${key} already exists in store.`)
+      IOE.fromPredicate(not(store.data.has.bind(store.data)), key =>
+        alreadyExistsError(`Key ${key} already exists in store.`),
       ),
-      IOE.tap((key) => IOE.of(store.data.set(key, value)))
+      IOE.tap(key => IOE.of(store.data.set(key, value))),
     );
 
 export const read = <T>(store: Store<T>) =>
-  IOE.liftNullable(store.data.get.bind(store.data), (key) =>
-    notFoundError(`Key ${key} doesn't exist in store.`)
+  IOE.liftNullable(store.data.get.bind(store.data), key =>
+    notFoundError(`Key ${key} doesn't exist in store.`),
   );
 
 export const update =
@@ -49,7 +49,7 @@ export const update =
       key,
       read(store),
       IOE.map(updateFn),
-      IOE.tap((newValue) => IOE.of(store.data.set(key, newValue)))
+      IOE.tap(newValue => IOE.of(store.data.set(key, newValue))),
     );
 
 export const updateEither =
@@ -60,15 +60,15 @@ export const updateEither =
       key,
       read(store),
       IOE.flatMap(IOE.fromEitherK(updateFn)),
-      IOE.tap((newValue) => IOE.of(store.data.set(key, newValue)))
+      IOE.tap(newValue => IOE.of(store.data.set(key, newValue))),
     );
 
 export const remove = <T>(store: Store<T>) =>
   flow(
-    IOE.fromPredicate(store.data.has.bind(store.data), (key) =>
-      notFoundError(`Key ${key} doesn't exist in store.`)
+    IOE.fromPredicate(store.data.has.bind(store.data), key =>
+      notFoundError(`Key ${key} doesn't exist in store.`),
     ),
-    IOE.tap((key) => IOE.of(store.data.delete(key)))
+    IOE.tap(key => IOE.of(store.data.delete(key))),
   );
 
 export const removeMany = <T>(store: Store<T>) =>
@@ -80,27 +80,27 @@ export const list = <T>(store: Store<T>) =>
 const acquireMutex = <T>(store: Store<T>) =>
   TE.tryCatch(
     () => store.mutex.acquire(),
-    () => mutexError("Failed to acquire mutex.")
+    () => mutexError("Failed to acquire mutex."),
   );
 
 const releaseMutex = (release: () => void) => TE.of(release());
 
 export type StoreAPI<T> = {
   create: (
-    key: string
+    key: string,
   ) => (value: T) => TE.TaskEither<MutexError | AlreadyExistsError, string>;
   read: (key: string) => TE.TaskEither<MutexError | NotFoundError, T>;
   update: (
-    key: string
+    key: string,
   ) => (updateFn: (a: T) => T) => TE.TaskEither<MutexError | NotFoundError, T>;
   updateEither: (
-    key: string
+    key: string,
   ) => <E>(
-    updateFn: (a: T) => E.Either<E, T>
+    updateFn: (a: T) => E.Either<E, T>,
   ) => TE.TaskEither<E | MutexError | NotFoundError, T>;
   delete: (key: string) => TE.TaskEither<MutexError | NotFoundError, string>;
   deleteMany: (
-    keys: string[]
+    keys: string[],
   ) => TE.TaskEither<MutexError | NotFoundError, string[]>;
   list: () => TE.TaskEither<MutexError, [string, T][]>;
 };
@@ -110,19 +110,19 @@ export const storeAPI = <T>(store: Store<T>): StoreAPI<T> => ({
     TE.bracketW(
       acquireMutex(store),
       () => TE.fromIOEither(create(store)(value)(key)),
-      releaseMutex
+      releaseMutex,
     ),
   read: (key: string) =>
     TE.bracketW(
       acquireMutex(store),
       () => TE.fromIOEither(read(store)(key)),
-      releaseMutex
+      releaseMutex,
     ),
   update: (key: string) => (updateFn: (a: T) => T) =>
     TE.bracketW(
       acquireMutex(store),
       () => TE.fromIOEither(update(store)(updateFn)(key)),
-      releaseMutex
+      releaseMutex,
     ),
   updateEither:
     (key: string) =>
@@ -130,24 +130,24 @@ export const storeAPI = <T>(store: Store<T>): StoreAPI<T> => ({
       TE.bracketW(
         acquireMutex(store),
         () => TE.fromIOEither(updateEither<T, E>(store)(updateFn)(key)),
-        releaseMutex
+        releaseMutex,
       ),
   delete: (key: string) =>
     TE.bracketW(
       acquireMutex(store),
       () => TE.fromIOEither(remove(store)(key)),
-      releaseMutex
+      releaseMutex,
     ),
   deleteMany: (keys: string[]) =>
     TE.bracketW(
       acquireMutex(store),
       () => TE.fromIOEither(removeMany(store)(keys)),
-      releaseMutex
+      releaseMutex,
     ),
   list: () =>
     TE.bracketW(
       acquireMutex(store),
       () => TE.fromIOEither(list(store)),
-      releaseMutex
+      releaseMutex,
     ),
 });
