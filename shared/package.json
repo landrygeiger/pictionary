@@ -10,10 +10,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "jwt-simple": "^0.5.6"
-  },
-  "devDependencies": {
-    "@types/jwt-simple": "^0.5.36"
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }
