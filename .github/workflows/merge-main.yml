@@ -2,7 +2,7 @@ name: Deploy app on merge
 "on":
   push:
     branches:
-      - master
+      - main
 jobs:
   check:
     runs-on: ubuntu-latest
