@@ -21,6 +21,7 @@ jobs:
         run: npx tsc --noEmit
 
   deploy:
+    needs: check
     runs-on: ubuntu-latest
     steps:
       # Build
