@@ -43,7 +43,7 @@ jobs:
           SOURCE: "./server/dist/"
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          TARGET: /srv/pictionary/server/dist/
+          TARGET: ~/pictionary/server/dist/
       - name: Move web-app to server
         uses: easingthemes/ssh-deploy@main
         env:
@@ -52,7 +52,7 @@ jobs:
           SOURCE: "./web-app/dist/"
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          TARGET: /srv/pictionary/web-app/dist/
+          TARGET: ~/pictionary/web-app/dist/
       - name: Move node_modules to server
         uses: easingthemes/ssh-deploy@main
         env:
@@ -61,5 +61,5 @@ jobs:
           SOURCE: "./node_modules/"
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          TARGET: /srv/pictionary/node_modules/
+          TARGET: ~/pictionary/node_modules/
           SCRIPT_AFTER: "pm2 reload all"
