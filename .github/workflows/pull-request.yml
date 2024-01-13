@@ -1,0 +1,18 @@
+name: Test and check on pull request
+"on": pull_request
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: npm ci
+      - name: Build dependencies
+        run: npm run build
+      - name: Test
+        run: npm test
+      - name: Lint
+        run: npm run lint
+      - name: Type check
+        run: npx tsc --noEmit

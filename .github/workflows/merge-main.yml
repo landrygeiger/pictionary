@@ -1,0 +1,64 @@
+name: Deploy app on merge
+"on":
+  push:
+    branches:
+      - master
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: npm ci
+      - name: Build dependencies
+        run: npm run build
+      - name: Test
+        run: npm test
+      - name: Lint
+        run: npm run lint
+      - name: Type check
+        run: npx tsc --noEmit
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Build
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: npm install
+      - name: Build shared package and server package
+        run: npm run build
+      - name: Build web-app
+        run: cd web-app && npx ng build
+
+      # Deploy
+      - name: Deploy server
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ARGS: "-rcL --delete"
+          SOURCE: "./server/dist/"
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          TARGET: /srv/pictionary/server/dist/
+      - name: Move web-app to server
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ARGS: "-rcL --delete"
+          SOURCE: "./web-app/dist/"
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          TARGET: /srv/pictionary/web-app/dist/
+      - name: Move node_modules to server
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          ARGS: "-rcL --delete"
+          SOURCE: "./node_modules/"
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          TARGET: /srv/pictionary/node_modules/
+          SCRIPT_AFTER: "pm2 reload all"
