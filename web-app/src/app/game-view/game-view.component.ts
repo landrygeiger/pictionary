@@ -1,9 +1,6 @@
 import { Component, Input } from "@angular/core";
-import { SocketService } from "../socket.service";
 import { CanvasComponent } from "../canvas/canvas.component";
 import { CommonModule } from "@angular/common";
-import { pipe } from "fp-ts/lib/function";
-import * as O from "fp-ts/Option";
 import { getStatusMessage } from "../../util/session";
 import { PlayerListComponent } from "../player-list/player-list.component";
 import { Session, WithId } from "@pictionary/shared";

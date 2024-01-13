@@ -1,5 +1,4 @@
 import { Component, Input } from "@angular/core";
-import { SocketService } from "../socket.service";
 import { Player } from "@pictionary/shared";
 import { CommonModule } from "@angular/common";
 
