@@ -52,3 +52,9 @@ export type DisconnectEventResponse = E.Either<
   MutexError | NotFoundError | SessionError,
   void
 >;
+
+export const UPDATE_EVENT = "update" as const;
+
+export type UpdateEventParams = WithId<Session>;
+
+export type UpdateEventResponse = E.Either<never, void>;

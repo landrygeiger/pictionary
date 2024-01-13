@@ -9,6 +9,8 @@ import {
   JoinEventParams,
   JoinEventResponse,
   Session,
+  UPDATE_EVENT,
+  UpdateEventParams,
   WithId,
   config,
 } from "@pictionary/shared";
@@ -30,6 +32,7 @@ export class SocketService {
   constructor() {
     this.socket.on("connect", this.handleConnectEvent);
     this.socket.on(DRAW_EVENT, this.handleDrawEvent);
+    this.socket.on(UPDATE_EVENT, this.handleUpdateEvent);
   }
 
   private handleConnectEvent = () => {};
@@ -46,6 +49,10 @@ export class SocketService {
     flow(JSON.stringify, console.log),
     session => (this.session = session),
   );
+
+  private handleUpdateEvent = (session: UpdateEventParams) => {
+    this.session = session;
+  };
 
   public emitDraw = emitter<DrawEventParams>(this.socket, DRAW_EVENT);
 

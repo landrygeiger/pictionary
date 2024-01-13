@@ -1,5 +1,8 @@
 <h1>
-  {{ this.getStatusMessage() || "Not currently playing..." }}
+  {{ this.status() }}
 </h1>
-<p *ngIf="socketService.session">Session Id: {{ socketService.session.id }}</p>
-<app-canvas></app-canvas>
+<p>Session Id: {{ session.id }}</p>
+<div class="view-container">
+  <app-player-list [players]="session.players"></app-player-list>
+  <app-canvas></app-canvas>
+</div>

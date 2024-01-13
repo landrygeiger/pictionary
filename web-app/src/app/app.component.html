@@ -2,6 +2,6 @@
   <app-room-selector></app-room-selector>
 </div>
 <ng-template #showSession>
-  <app-game-view></app-game-view>
+  <app-game-view [session]="$any(socketService.session)"></app-game-view>
 </ng-template>
 <router-outlet></router-outlet>
