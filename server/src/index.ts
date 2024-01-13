@@ -7,7 +7,6 @@ import {
   DISCONNECT_EVENT,
   DRAW_EVENT,
   JOIN_EVENT,
-  Session,
   config,
 } from "@pictionary/shared";
 import {

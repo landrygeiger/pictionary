@@ -1,7 +1,7 @@
 import * as TE from "fp-ts/TaskEither";
 import * as A from "fp-ts/Array";
 import * as IOE from "fp-ts/IOEither";
-import * as E from "fp-ts/Either";
+import * as E from "fp-ts/Either"; // eslint-disable-line @typescript-eslint/no-unused-vars
 import { Mutex } from "async-mutex";
 import {
   AlreadyExistsError,
