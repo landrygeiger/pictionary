@@ -74,7 +74,7 @@ export const handleJoinEvent: EventHandler<
     TE.bind("sessionId", () =>
       TE.fromEither(validateSessionId(params.sessionId)),
     ),
-    TE.tap(({ playerName, sessionId }) =>
+    TE.bindW("session", ({ playerName, sessionId }) =>
       sessionsAPI.updateEither(sessionId)(
         reduceSession({ kind: "join", playerName, socketId: socket.id }),
       ),
@@ -87,7 +87,7 @@ export const handleJoinEvent: EventHandler<
         ),
       ),
     ),
-    TE.map(constVoid),
+    TE.map(({ session }) => session),
   )();
 
 export const handleDisconnectEvent: EventHandler<

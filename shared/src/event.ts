@@ -7,6 +7,7 @@ import {
 } from "./error";
 import { Point } from "./point";
 import * as E from "fp-ts/Either";
+import { Session } from "./session";
 
 export const DRAW_EVENT = "draw" as const;
 
@@ -37,7 +38,7 @@ export type JoinEventParams = {
 
 export type JoinEventResponse = E.Either<
   MutexError | ValidationError | NotFoundError | SessionError,
-  void
+  Session
 >;
 
 export const DISCONNECT_EVENT = "disconnect" as const;
