@@ -26,7 +26,7 @@ export type CreateEventParams = {
 
 export type CreateEventResponse = E.Either<
   MutexError | ValidationError | AlreadyExistsError,
-  { sessionId: string }
+  Session
 >;
 
 export const JOIN_EVENT = "join" as const;

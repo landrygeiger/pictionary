@@ -61,7 +61,7 @@ export const handleCreateEvent: EventHandler<
         ),
       ),
     ),
-    TE.map(({ sessionId }) => ({ sessionId })),
+    TE.map(({ session }) => session),
   )();
 
 export const handleJoinEvent: EventHandler<
