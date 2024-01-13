@@ -1,4 +1,3 @@
-import * as E from "fp-ts/Either";
 import {
   CreateEventParams,
   CreateEventResponse,
@@ -94,7 +93,7 @@ export const handleJoinEvent: EventHandler<
 export const handleDisconnectEvent: EventHandler<
   DisconnectEventParams,
   DisconnectEventResponse
-> = socket => sessionsAPI => _ =>
+> = socket => sessionsAPI => () =>
   pipe(
     socket.id,
     getSessionsWithSocket(sessionsAPI),
