@@ -18,6 +18,7 @@ export type DrawEventParams = {
   end: Point;
   color: string;
   lineWidth: number;
+  sessionId: string;
 };
 
 export const CREATE_EVENT = "create" as const;

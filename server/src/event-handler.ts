@@ -20,15 +20,8 @@ import * as A from "fp-ts/Array";
 import { newSession, newSessionId, reduceSession } from "./session-state";
 import { getSessionsWithSocket, leaveSessions } from "./session-store";
 
-const broadcastToAllExceptSender =
-  <Params>(event: string) =>
-  (socket: Socket) =>
-  (params: Params) => {
-    socket.broadcast.emit(event, params);
-  };
-
-export const handleDrawEvent =
-  broadcastToAllExceptSender<DrawEventParams>(DRAW_EVENT);
+export const handleDrawEvent = (socket: Socket) => (params: DrawEventParams) =>
+  socket.broadcast.to(params.sessionId).emit(DRAW_EVENT, params);
 
 type EventHandler<Params, Response> = (
   socket: Socket,

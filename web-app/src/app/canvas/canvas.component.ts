@@ -64,12 +64,15 @@ export class CanvasComponent implements AfterViewInit {
           this.config.color,
           this.config.lineWidth,
         );
-        this.socketService.emitDraw({
-          start: prevPos,
-          end: currentPos,
-          color: this.config.color,
-          lineWidth: this.config.lineWidth,
-        });
+        if (this.socketService.session) {
+          this.socketService.emitDraw({
+            start: prevPos,
+            end: currentPos,
+            color: this.config.color,
+            lineWidth: this.config.lineWidth,
+            sessionId: this.socketService.session.id,
+          });
+        }
       });
   }
 
