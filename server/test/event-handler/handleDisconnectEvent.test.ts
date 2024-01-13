@@ -52,6 +52,9 @@ describe("handleDisconnectEvent", () => {
     const socketMock: Partial<Socket> = {
       join: jest.fn(),
       id: socketId,
+      broadcast: {
+        to: jest.fn().mockReturnValue({ emit: jest.fn() }),
+      } as any,
     };
 
     const sessionStore = store<Session>();
@@ -146,6 +149,9 @@ describe("handleDisconnectEvent", () => {
     const socketMock: Partial<Socket> = {
       join: jest.fn(),
       id: socketId,
+      broadcast: {
+        to: jest.fn().mockReturnValue({ emit: jest.fn() }),
+      } as any,
     };
 
     const sessionStore = store<Session>();

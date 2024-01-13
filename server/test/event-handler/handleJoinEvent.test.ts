@@ -66,6 +66,9 @@ describe("handleJoinEvent", () => {
     const socketMock: Partial<Socket> = {
       join: jest.fn(),
       id: "test-socket-id",
+      broadcast: {
+        to: jest.fn().mockReturnValue({ emit: jest.fn() }),
+      } as any,
     };
 
     const sessions = store<Session>();
@@ -107,6 +110,9 @@ describe("handleJoinEvent", () => {
     const socketMock: Partial<Socket> = {
       join: jest.fn(),
       id: "test-socket-id",
+      broadcast: {
+        to: jest.fn().mockReturnValue({ emit: jest.fn() }),
+      } as any,
     };
 
     const sessions = store<Session>();
