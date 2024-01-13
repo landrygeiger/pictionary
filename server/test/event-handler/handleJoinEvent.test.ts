@@ -4,6 +4,7 @@ import {
   JoinEventParams,
   Session,
   ValidationError,
+  WithId,
   config,
   validationError,
 } from "@pictionary/shared";
@@ -77,11 +78,12 @@ describe("handleJoinEvent", () => {
       ],
     });
 
-    await handleJoinEvent(socketMock as Socket)(sessionsAPI)(params);
+    const result = await handleJoinEvent(socketMock as Socket)(sessionsAPI)(
+      params,
+    );
 
-    const session = sessions.data.get(params.sessionId);
-
-    const expectedSession: Session = {
+    const expected: E.Either<never, WithId<Session>> = E.right({
+      id: expect.any(String) as any,
       state: "lobby",
       players: [
         { name: "test-player-2", owner: true, socketId: "test-socket-id-2" },
@@ -91,9 +93,9 @@ describe("handleJoinEvent", () => {
           socketId: socketMock.id as string,
         },
       ],
-    };
+    });
 
-    expect(session).toEqual(expectedSession);
+    expect(result).toEqual(expected);
   });
 
   it("puts socket in the session room", async () => {

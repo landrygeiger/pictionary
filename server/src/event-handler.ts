@@ -20,15 +20,8 @@ import * as A from "fp-ts/Array";
 import { newSession, newSessionId, reduceSession } from "./session-state";
 import { getSessionsWithSocket, leaveSessions } from "./session-store";
 
-const broadcastToAllExceptSender =
-  <Params>(event: string) =>
-  (socket: Socket) =>
-  (params: Params) => {
-    socket.broadcast.emit(event, params);
-  };
-
-export const handleDrawEvent =
-  broadcastToAllExceptSender<DrawEventParams>(DRAW_EVENT);
+export const handleDrawEvent = (socket: Socket) => (params: DrawEventParams) =>
+  socket.broadcast.to(params.sessionId).emit(DRAW_EVENT, params);
 
 type EventHandler<Params, Response> = (
   socket: Socket,
@@ -61,7 +54,7 @@ export const handleCreateEvent: EventHandler<
         ),
       ),
     ),
-    TE.map(({ sessionId }) => ({ sessionId })),
+    TE.map(({ session, sessionId }) => ({ id: sessionId, ...session })),
   )();
 
 export const handleJoinEvent: EventHandler<
@@ -74,7 +67,7 @@ export const handleJoinEvent: EventHandler<
     TE.bind("sessionId", () =>
       TE.fromEither(validateSessionId(params.sessionId)),
     ),
-    TE.tap(({ playerName, sessionId }) =>
+    TE.bindW("session", ({ playerName, sessionId }) =>
       sessionsAPI.updateEither(sessionId)(
         reduceSession({ kind: "join", playerName, socketId: socket.id }),
       ),
@@ -87,7 +80,7 @@ export const handleJoinEvent: EventHandler<
         ),
       ),
     ),
-    TE.map(constVoid),
+    TE.map(({ session, sessionId }) => ({ id: sessionId, ...session })),
   )();
 
 export const handleDisconnectEvent: EventHandler<

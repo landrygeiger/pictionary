@@ -1,7 +1,7 @@
-<div class="app-container">
-  <div class="content-container">
-    <app-room-selector></app-room-selector>
-    <app-canvas></app-canvas>
-  </div>
+<div *ngIf="!socketService.session; else showSession">
+  <app-room-selector></app-room-selector>
 </div>
+<ng-template #showSession>
+  <app-game-view></app-game-view>
+</ng-template>
 <router-outlet></router-outlet>

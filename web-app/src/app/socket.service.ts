@@ -8,20 +8,22 @@ import {
   JOIN_EVENT,
   JoinEventParams,
   JoinEventResponse,
+  Session,
+  WithId,
   config,
 } from "@pictionary/shared";
 import { io } from "socket.io-client";
 import { emitter } from "../util/socket-util";
 import { Subject } from "rxjs";
 import * as E from "fp-ts/Either";
-import { constVoid, flow } from "fp-ts/lib/function";
+import { flow } from "fp-ts/lib/function";
 
 @Injectable({
   providedIn: "root",
 })
 export class SocketService {
   private socket = isDevMode() ? io(`localhost:${config.serverPort}`) : io();
-  sessionId?: string;
+  session?: WithId<Session>;
 
   public drawEventSubject = new Subject<DrawEventParams>();
 
@@ -36,13 +38,13 @@ export class SocketService {
     this.drawEventSubject.next(params);
 
   private handleCreateEventResponse: (res: CreateEventResponse) => void =
-    E.match(flow(JSON.stringify, console.log), res => {
-      this.sessionId = res.sessionId;
+    E.match(flow(JSON.stringify, console.log), session => {
+      this.session = session;
     });
 
   private handleJoinEventResponse: (res: JoinEventResponse) => void = E.match(
     flow(JSON.stringify, console.log),
-    constVoid,
+    session => (this.session = session),
   );
 
   public emitDraw = emitter<DrawEventParams>(this.socket, DRAW_EVENT);

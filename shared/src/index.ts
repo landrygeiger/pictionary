@@ -11,6 +11,7 @@ export {
   DISCONNECT_EVENT,
   type DisconnectEventParams,
   type DisconnectEventResponse,
+  type WithId,
 } from "./event";
 export { type CanvasConfig } from "./canvas";
 export { config } from "./config";
