@@ -14,3 +14,7 @@ export const validateName = flow(
     )
   )
 );
+
+export const validateSessionId = E.fromPredicate(not(isEmptyStr), () =>
+  validationError("Session ids must not be empty.")
+);

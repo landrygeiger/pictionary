@@ -42,25 +42,35 @@ type LeaveAction = {
   socketId: string;
 };
 
-const hasPlayer = (session: Session) => (playerName: string) =>
+const hasPlayerWithName = (session: Session) => (playerName: string) =>
   pipe(
     session.players,
     A.exists((p) => p.name === playerName)
   );
 
-const getPlayer = (session: Session) => (socketId: string) =>
+const hasPlayerWithSocket = (session: Session) => (socketId: string) =>
+  pipe(
+    session.players,
+    A.exists((p) => p.socketId === socketId)
+  );
+
+const getPlayerBySocketId = (session: Session) => (socketId: string) =>
   pipe(
     session.players,
     A.findFirst((p) => p.socketId === socketId),
     E.fromOption(() =>
-      sessionError("A player with that name could not be found.")
+      sessionError("A player with that socket id could not be found.")
     )
   );
 
-const performAddPlayer = (session: Session) => (socketId: string) =>
+export const performAddPlayer = (session: Session) => (socketId: string) =>
   flow(
-    E.fromPredicate(not(hasPlayer(session)), () =>
+    E.fromPredicate(not(hasPlayerWithName(session)), () =>
       sessionError("That name is already in use.")
+    ),
+    E.filterOrElse(
+      () => !hasPlayerWithSocket(session)(socketId),
+      () => sessionError("That socket is already in the session.")
     ),
     E.map((playerName) => ({
       ...session,
@@ -68,9 +78,9 @@ const performAddPlayer = (session: Session) => (socketId: string) =>
     }))
   );
 
-const performRemovePlayer = (session: Session) =>
+export const performRemovePlayer = (session: Session) =>
   flow(
-    getPlayer(session),
+    getPlayerBySocketId(session),
     E.map(removePlayerKeepListOwned(session.players)),
     E.map(
       (players): Session => ({

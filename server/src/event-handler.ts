@@ -11,6 +11,7 @@ import {
   Session,
   filterSessionsInState,
   validateName,
+  validateSessionId,
 } from "@pictionary/shared";
 import { Socket } from "socket.io";
 import { StoreAPI } from "./store";
@@ -71,16 +72,19 @@ export const handleJoinEvent: EventHandler<
   pipe(
     TE.Do,
     TE.bind("playerName", () => TE.fromEither(validateName(params.playerName))),
-    TE.tap(({ playerName }) =>
-      sessionsAPI.updateEither(params.sessionId)(
+    TE.bind("sessionId", () =>
+      TE.fromEither(validateSessionId(params.sessionId))
+    ),
+    TE.tap(({ playerName, sessionId }) =>
+      sessionsAPI.updateEither(sessionId)(
         reduceSession({ kind: "join", playerName, socketId: socket.id })
       )
     ),
-    TE.tap(() => TE.right(socket.join(params.sessionId))),
-    TE.tap(({ playerName }) =>
+    TE.tap(({ sessionId }) => TE.right(socket.join(sessionId))),
+    TE.tap(({ playerName, sessionId }) =>
       TE.right(
         console.log(
-          `[Server]: Player ${playerName} joined session with id ${params.sessionId}.`
+          `[Server]: Player ${playerName} joined session with id ${sessionId}.`
         )
       )
     ),

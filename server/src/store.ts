@@ -26,7 +26,7 @@ export const store = <T>(): Store<T> => ({
   mutex: new Mutex(),
 });
 
-const create =
+export const create =
   <T>(store: Store<T>) =>
   (value: T) =>
     flow(
@@ -36,12 +36,12 @@ const create =
       IOE.tap((key) => IOE.of(store.data.set(key, value)))
     );
 
-const read = <T>(store: Store<T>) =>
+export const read = <T>(store: Store<T>) =>
   IOE.liftNullable(store.data.get.bind(store.data), (key) =>
     notFoundError(`Key ${key} doesn't exist in store.`)
   );
 
-const update =
+export const update =
   <T>(store: Store<T>) =>
   (updateFn: (a: T) => T) =>
   (key: string) =>
@@ -52,7 +52,7 @@ const update =
       IOE.tap((newValue) => IOE.of(store.data.set(key, newValue)))
     );
 
-const updateEither =
+export const updateEither =
   <T, E>(store: Store<T>) =>
   (updateFn: (a: T) => E.Either<E, T>) =>
   (key: string) =>
@@ -63,7 +63,7 @@ const updateEither =
       IOE.tap((newValue) => IOE.of(store.data.set(key, newValue)))
     );
 
-const remove = <T>(store: Store<T>) =>
+export const remove = <T>(store: Store<T>) =>
   flow(
     IOE.fromPredicate(store.data.has.bind(store.data), (key) =>
       notFoundError(`Key ${key} doesn't exist in store.`)
@@ -71,15 +71,11 @@ const remove = <T>(store: Store<T>) =>
     IOE.tap((key) => IOE.of(store.data.delete(key)))
   );
 
-const removeMany = <T>(store: Store<T>) =>
-  flow(A.traverse(IOE.ApplicativeSeq)(remove(store)));
+export const removeMany = <T>(store: Store<T>) =>
+  A.traverse(IOE.ApplicativeSeq)(remove(store));
 
-const list = <T>(store: Store<T>) =>
-  IOE.right(
-    [...store.data.keys()].map(
-      (key): WithKey<T> => ({ ...(store.data.get(key) as T), key })
-    )
-  );
+export const list = <T>(store: Store<T>) =>
+  IOE.right([...store.data.entries()]);
 
 const acquireMutex = <T>(store: Store<T>) =>
   TE.tryCatch(
@@ -106,7 +102,7 @@ export type StoreAPI<T> = {
   deleteMany: (
     keys: string[]
   ) => TE.TaskEither<MutexError | NotFoundError, string[]>;
-  list: () => TE.TaskEither<MutexError, WithKey<T>[]>;
+  list: () => TE.TaskEither<MutexError, [string, T][]>;
 };
 
 export const storeAPI = <T>(store: Store<T>): StoreAPI<T> => ({
