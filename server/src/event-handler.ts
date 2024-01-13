@@ -8,6 +8,8 @@ import {
   JoinEventParams,
   JoinEventResponse,
   Session,
+  UPDATE_EVENT,
+  UpdateEventParams,
   filterSessionsInState,
   validateName,
   validateSessionId,
@@ -22,6 +24,16 @@ import { getSessionsWithSocket, leaveSessions } from "./session-store";
 
 export const handleDrawEvent = (socket: Socket) => (params: DrawEventParams) =>
   socket.broadcast.to(params.sessionId).emit(DRAW_EVENT, params);
+
+export const broadcastToRestOfRoom =
+  <Params>(event: string) =>
+  (socket: Socket) =>
+  (room: string) =>
+  (params: Params) =>
+    socket.broadcast.to(room).emit(event, params);
+
+export const broadcastSessionUpdate =
+  broadcastToRestOfRoom<UpdateEventParams>(UPDATE_EVENT);
 
 type EventHandler<Params, Response> = (
   socket: Socket,
@@ -73,6 +85,14 @@ export const handleJoinEvent: EventHandler<
       ),
     ),
     TE.tap(({ sessionId }) => TE.right(socket.join(sessionId))),
+    TE.tap(({ session, sessionId }) =>
+      TE.right(
+        broadcastSessionUpdate(socket)(sessionId)({
+          id: sessionId,
+          ...session,
+        }),
+      ),
+    ),
     TE.tap(({ playerName, sessionId }) =>
       TE.right(
         console.log(
@@ -91,6 +111,16 @@ export const handleDisconnectEvent: EventHandler<
     socket.id,
     getSessionsWithSocket(sessionsAPI),
     TE.flatMap(leaveSessions(sessionsAPI)(socket)),
+    TE.tap(sessions =>
+      TE.right(
+        sessions.map(session =>
+          broadcastSessionUpdate(socket)(session.key)({
+            id: session.key,
+            ...session,
+          }),
+        ),
+      ),
+    ),
     TE.map(filterSessionsInState("ending")),
     TE.map(A.map(session => session.key)),
     TE.flatMap(sessionsAPI.deleteMany),

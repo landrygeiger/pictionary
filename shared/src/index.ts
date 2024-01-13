@@ -12,6 +12,9 @@ export {
   type DisconnectEventParams,
   type DisconnectEventResponse,
   type WithId,
+  UPDATE_EVENT,
+  type UpdateEventParams,
+  type UpdateEventResponse,
 } from "./event";
 export { type CanvasConfig } from "./canvas";
 export { config } from "./config";
