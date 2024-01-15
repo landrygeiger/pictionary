@@ -3,6 +3,7 @@
 </h1>
 <p>Session Id: {{ session.id }}</p>
 <div class="view-container">
-  <app-player-list [players]="session.players"></app-player-list>
+  <app-message-box></app-message-box>
   <app-canvas></app-canvas>
+  <app-player-list [players]="session.players"></app-player-list>
 </div>

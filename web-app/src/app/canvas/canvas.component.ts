@@ -22,8 +22,8 @@ import { CanvasConfigSelectorComponent } from "../canvas-config-selector/canvas-
   styleUrl: "./canvas.component.css",
 })
 export class CanvasComponent implements AfterViewInit {
-  @Input() width = 600;
-  @Input() height = 400;
+  @Input() width = 598;
+  @Input() height = 398;
 
   @ViewChild("canvasRef")
   canvas!: ElementRef<HTMLCanvasElement>;

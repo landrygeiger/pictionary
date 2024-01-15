@@ -38,6 +38,15 @@ export const broadcastToRestOfRoom =
   (params: Params) =>
     socket.broadcast.to(room).emit(event, params);
 
+export const broadcastToRoomAndClient =
+  <Params>(event: string) =>
+  (socket: Socket) =>
+  (room: string) =>
+  (params: Params) => {
+    socket.to(room).emit(event, params);
+    socket.emit(event, params);
+  };
+
 export const broadcastSessionUpdate =
   broadcastToRestOfRoom<UpdateEventParams>(UPDATE_EVENT);
 
@@ -47,12 +56,12 @@ export const broadcastDrawEvent =
 export const handleDrawEvent = (socket: Socket) => (params: DrawEventParams) =>
   broadcastDrawEvent(socket)(params.sessionId)(params);
 
+export const broadcastMessageEvent =
+  broadcastToRoomAndClient<MessageEventBroadcastParams>(MESSAGE_EVENT);
+
 type EventHandler<Params, Response> = (
   socket: Socket,
 ) => (sessionsAPI: StoreAPI<Session>) => (params: Params) => Promise<Response>;
-
-export const broadcastMessageEvent =
-  broadcastToRestOfRoom<MessageEventBroadcastParams>(MESSAGE_EVENT);
 
 export const socketEventHandler =
   (socket: Socket) =>

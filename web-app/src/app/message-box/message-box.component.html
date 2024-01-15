@@ -1,1 +1,17 @@
-<p>message-box works!</p>
+<div class="message-container" #messageContainer>
+  <p *ngFor="let receivedMessage of messages">
+    {{ receivedMessage.playerName }}: {{ receivedMessage.message }}
+  </p>
+</div>
+<div class="message-input-container">
+  <input
+    class="message-input"
+    [(ngModel)]="message"
+    placeholder="Guess"
+    autofocus="true"
+    (keydown.enter)="sendMessage()"
+  />
+  <button class="send-button" (click)="sendMessage()" [disabled]="!message">
+    Send
+  </button>
+</div>
