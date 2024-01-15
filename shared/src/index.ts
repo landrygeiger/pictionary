@@ -39,10 +39,14 @@ export {
   type Player,
   type EndingSessionState,
   type LobbySessionState,
+  type RoundSessionState,
+  type BetweenSessionState,
   playerEq,
   removePlayerFromList,
   removePlayerKeepListOwned,
   filterSessionsInState,
+  ROUND_LENGTH,
+  BETWEEN_LENGTH,
 } from "./session";
 export { not, isEmptyArr } from "./pure-util";
 export { validateName, validateSessionId } from "./validate";

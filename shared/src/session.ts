@@ -5,21 +5,26 @@ import { not } from "./pure-util";
 import * as O from "fp-ts/Option";
 import { flip, identity, pipe } from "fp-ts/lib/function";
 
+export const ROUND_LENGTH = 60;
+
+export const BETWEEN_LENGTH = 5;
+
 const states = ["lobby", "ending", "round", "between"] as const;
 
-export type Session = { players: Player[] } & (
+export type Session =
   | LobbySessionState
   | EndingSessionState
   | RoundSessionState
-  | BetweenSessionState
-);
+  | BetweenSessionState;
 
 export type LobbySessionState = {
   state: (typeof states)[0];
+  players: Player[];
 };
 
 export type EndingSessionState = {
   state: (typeof states)[1];
+  players: Player[];
 };
 
 export type RoundSessionState = {
@@ -27,12 +32,14 @@ export type RoundSessionState = {
   timeLeft: number;
   timerToken: string;
   word: string;
+  players: Player[];
 };
 
 export type BetweenSessionState = {
   state: (typeof states)[3];
   timeLeft: number;
   timerToken: string;
+  players: Player[];
 };
 
 export type Player = {
