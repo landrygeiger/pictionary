@@ -4,11 +4,17 @@ import { CommonModule } from "@angular/common";
 import { getStatusMessage } from "../../util/session";
 import { PlayerListComponent } from "../player-list/player-list.component";
 import { Session, WithId } from "@pictionary/shared";
+import { MessageBoxComponent } from "../message-box/message-box.component";
 
 @Component({
   selector: "app-game-view",
   standalone: true,
-  imports: [CanvasComponent, CommonModule, PlayerListComponent],
+  imports: [
+    CanvasComponent,
+    CommonModule,
+    PlayerListComponent,
+    MessageBoxComponent,
+  ],
   templateUrl: "./game-view.component.html",
   styleUrl: "./game-view.component.css",
 })

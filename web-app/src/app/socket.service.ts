@@ -8,6 +8,9 @@ import {
   JOIN_EVENT,
   JoinEventParams,
   JoinEventResponse,
+  MESSAGE_EVENT,
+  MessageEventBroadcastParams,
+  MessageEventParams,
   Session,
   UPDATE_EVENT,
   UpdateEventParams,
@@ -28,17 +31,23 @@ export class SocketService {
   session?: WithId<Session>;
 
   public drawEventSubject = new Subject<DrawEventParams>();
+  public messageEventSubject = new Subject<MessageEventBroadcastParams>();
 
   constructor() {
     this.socket.on("connect", this.handleConnectEvent);
     this.socket.on(DRAW_EVENT, this.handleDrawEvent);
     this.socket.on(UPDATE_EVENT, this.handleUpdateEvent);
+    this.socket.on(MESSAGE_EVENT, this.handleMessageEvent);
   }
 
   private handleConnectEvent = () => {};
 
   private handleDrawEvent = (params: DrawEventParams) =>
     this.drawEventSubject.next(params);
+
+  private handleMessageEvent = (params: MessageEventBroadcastParams) => {
+    this.messageEventSubject.next(params);
+  };
 
   private handleCreateEventResponse: (res: CreateEventResponse) => void =
     E.match(flow(JSON.stringify, console.log), session => {
@@ -67,4 +76,6 @@ export class SocketService {
     JOIN_EVENT,
     this.handleJoinEventResponse,
   );
+
+  public emitMessage = emitter<MessageEventParams>(this.socket, MESSAGE_EVENT);
 }

@@ -1,0 +1,33 @@
+.message-container {
+  border: 1px solid black;
+  width: 250px;
+  height: 400px;
+  overflow-y: scroll;
+}
+
+.message {
+  padding-left: 8px;
+}
+
+.message-input-container {
+  width: 250px;
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+  gap: 4px;
+}
+
+.message-input {
+  flex-grow: 1;
+  height: 25px;
+  min-width: 0;
+  margin: 0;
+  padding: 4px;
+  border: 1px solid black;
+}
+
+.send-button {
+  flex-grow: 1;
+  height: 25px;
+  margin: 0;
+}
