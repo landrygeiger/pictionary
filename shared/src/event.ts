@@ -58,3 +58,16 @@ export const UPDATE_EVENT = "update" as const;
 export type UpdateEventParams = WithId<Session>;
 
 export type UpdateEventResponse = E.Either<never, void>;
+
+export const MESSAGE_EVENT = "message" as const;
+
+export type MessageEventParams = {
+  sessionId: string;
+  message: string;
+};
+
+export type MessageEventBroadcastParams = {
+  message: string;
+  player: string;
+  kind: "correct" | "guess";
+};
