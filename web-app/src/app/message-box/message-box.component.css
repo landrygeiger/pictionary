@@ -1,12 +1,16 @@
 .message-container {
   border: 1px solid black;
-  width: 200px;
+  width: 250px;
   height: 400px;
-  overflow: scroll;
+  overflow-y: scroll;
+}
+
+.message {
+  padding-left: 8px;
 }
 
 .message-input-container {
-  width: 200px;
+  width: 250px;
   display: flex;
   align-items: center;
   margin-top: 4px;
