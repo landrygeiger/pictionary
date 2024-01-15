@@ -1,10 +1,18 @@
 <h1>Create or join a room to play!</h1>
 <div class="container">
-  <input [(ngModel)]="name" placeholder="Name" />
+  <input
+    [(ngModel)]="name"
+    placeholder="Name"
+    (keydown.enter)="handleCreate()"
+  />
   <button (click)="handleCreate()">Create Room</button>
 </div>
 <div class="container">
-  <input [(ngModel)]="name" placeholder="Name" />
-  <input [(ngModel)]="sessionId" placeholder="Session Id" />
+  <input [(ngModel)]="name" placeholder="Name" (keydown.enter)="handleJoin()" />
+  <input
+    [(ngModel)]="sessionId"
+    placeholder="Session Id"
+    (keydown.enter)="handleJoin()"
+  />
   <button (click)="handleJoin()">Join Room</button>
 </div>
