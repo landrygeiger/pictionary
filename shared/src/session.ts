@@ -5,11 +5,13 @@ import { not } from "./pure-util";
 import * as O from "fp-ts/Option";
 import { flip, identity, pipe } from "fp-ts/lib/function";
 
-const states = ["lobby", "ending"] as const;
+const states = ["lobby", "ending", "round", "between"] as const;
 
 export type Session = { players: Player[] } & (
   | LobbySessionState
   | EndingSessionState
+  | RoundSessionState
+  | BetweenSessionState
 );
 
 export type LobbySessionState = {
@@ -18,6 +20,19 @@ export type LobbySessionState = {
 
 export type EndingSessionState = {
   state: (typeof states)[1];
+};
+
+export type RoundSessionState = {
+  state: (typeof states)[2];
+  timeLeft: number;
+  timerToken: string;
+  word: string;
+};
+
+export type BetweenSessionState = {
+  state: (typeof states)[3];
+  timeLeft: number;
+  timerToken: string;
 };
 
 export type Player = {
