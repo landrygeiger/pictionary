@@ -7,6 +7,10 @@ import {
   DrawEventParams,
   JoinEventParams,
   JoinEventResponse,
+  MESSAGE_EVENT,
+  MessageEventBroadcastParams,
+  MessageEventParams,
+  MessageEventResponse,
   Session,
   UPDATE_EVENT,
   UpdateEventParams,
@@ -19,11 +23,13 @@ import { StoreAPI } from "./store";
 import { constVoid, pipe } from "fp-ts/lib/function";
 import * as TE from "fp-ts/TaskEither";
 import * as A from "fp-ts/Array";
-import { newSession, newSessionId, reduceSession } from "./session-state";
+import {
+  getPlayerBySocketId,
+  newSession,
+  newSessionId,
+  reduceSession,
+} from "./session-state";
 import { getSessionsWithSocket, leaveSessions } from "./session-store";
-
-export const handleDrawEvent = (socket: Socket) => (params: DrawEventParams) =>
-  socket.broadcast.to(params.sessionId).emit(DRAW_EVENT, params);
 
 export const broadcastToRestOfRoom =
   <Params>(event: string) =>
@@ -35,9 +41,18 @@ export const broadcastToRestOfRoom =
 export const broadcastSessionUpdate =
   broadcastToRestOfRoom<UpdateEventParams>(UPDATE_EVENT);
 
+export const broadcastDrawEvent =
+  broadcastToRestOfRoom<DrawEventParams>(DRAW_EVENT);
+
+export const handleDrawEvent = (socket: Socket) => (params: DrawEventParams) =>
+  broadcastDrawEvent(socket)(params.sessionId)(params);
+
 type EventHandler<Params, Response> = (
   socket: Socket,
 ) => (sessionsAPI: StoreAPI<Session>) => (params: Params) => Promise<Response>;
+
+export const broadcastMessageEvent =
+  broadcastToRestOfRoom<MessageEventBroadcastParams>(MESSAGE_EVENT);
 
 export const socketEventHandler =
   (socket: Socket) =>
@@ -129,5 +144,25 @@ export const handleDisconnectEvent: EventHandler<
         console.log(`[Server]: Player with id ${socket.id} has disconnected.`),
       ),
     ),
+    TE.map(constVoid),
+  )();
+
+export const handleMessageEvent: EventHandler<
+  MessageEventParams,
+  MessageEventResponse
+> = socket => sessionsAPI => params =>
+  pipe(
+    sessionsAPI.read(params.sessionId),
+    TE.flatMap(
+      TE.fromEitherK(session => getPlayerBySocketId(session)(socket.id)),
+    ),
+    TE.map(
+      (player): MessageEventBroadcastParams => ({
+        kind: "guess",
+        playerName: player.name,
+        message: params.message,
+      }),
+    ),
+    TE.map(broadcastMessageEvent(socket)(params.sessionId)),
     TE.map(constVoid),
   )();

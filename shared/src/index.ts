@@ -18,6 +18,7 @@ export {
   MESSAGE_EVENT,
   type MessageEventBroadcastParams,
   type MessageEventParams,
+  type MessageEventResponse,
 } from "./event";
 export { type CanvasConfig } from "./canvas";
 export { config } from "./config";

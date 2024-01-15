@@ -54,7 +54,7 @@ const hasPlayerWithSocket = (session: Session) => (socketId: string) =>
     A.exists(p => p.socketId === socketId),
   );
 
-const getPlayerBySocketId = (session: Session) => (socketId: string) =>
+export const getPlayerBySocketId = (session: Session) => (socketId: string) =>
   pipe(
     session.players,
     A.findFirst(p => p.socketId === socketId),

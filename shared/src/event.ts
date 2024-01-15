@@ -66,8 +66,13 @@ export type MessageEventParams = {
   message: string;
 };
 
+export type MessageEventResponse = E.Either<
+  MutexError | NotFoundError | SessionError,
+  void
+>;
+
 export type MessageEventBroadcastParams = {
   message: string;
-  player: string;
+  playerName: string;
   kind: "correct" | "guess";
 };
