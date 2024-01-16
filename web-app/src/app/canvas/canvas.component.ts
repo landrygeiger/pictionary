@@ -13,11 +13,12 @@ import {
 import { fromEvent, pairwise, switchMap, takeUntil } from "rxjs";
 import { SocketService } from "../socket.service";
 import { CanvasConfigSelectorComponent } from "../canvas-config-selector/canvas-config-selector.component";
+import { CommonModule } from "@angular/common";
 
 @Component({
   selector: "app-canvas",
   standalone: true,
-  imports: [CanvasConfigSelectorComponent],
+  imports: [CanvasConfigSelectorComponent, CommonModule],
   templateUrl: "./canvas.component.html",
   styleUrl: "./canvas.component.css",
 })
@@ -58,6 +59,7 @@ export class CanvasComponent implements AfterViewInit {
       .subscribe((res: [MouseEvent, MouseEvent]) => {
         const prevPos = relativeMousePosFromEvent(res[0], canvasEl);
         const currentPos = relativeMousePosFromEvent(res[1], canvasEl);
+        if (!this.socketService.getCurrentPlayer()?.drawing) return;
         this.draw(
           prevPos,
           currentPos,
