@@ -16,3 +16,7 @@ li {
 li:not(:last-child) {
   margin-bottom: 4px;
 }
+
+.guessed-word {
+  color: #00650e;
+}

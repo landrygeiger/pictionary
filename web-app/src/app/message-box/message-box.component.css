@@ -31,3 +31,7 @@
   height: 25px;
   margin: 0;
 }
+
+.guessed-word {
+  color: #00650e;
+}
