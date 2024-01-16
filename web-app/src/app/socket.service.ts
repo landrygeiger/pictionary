@@ -26,7 +26,6 @@ import { emitter } from "../util/socket-util";
 import { Subject } from "rxjs";
 import * as E from "fp-ts/Either";
 import { flow, pipe } from "fp-ts/lib/function";
-import { pipeable } from "fp-ts";
 
 @Injectable({
   providedIn: "root",
