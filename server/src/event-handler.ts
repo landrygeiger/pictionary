@@ -16,6 +16,7 @@ import {
   StartEventResponse,
   UPDATE_EVENT,
   UpdateEventParams,
+  didGuessWord,
   filterSessionsInState,
   newSession,
   validateName,
@@ -28,6 +29,7 @@ import * as TE from "fp-ts/TaskEither";
 import * as A from "fp-ts/Array";
 import {
   getPlayerBySocketId,
+  hideGuessIfCorrect,
   newSessionId,
   newTimerToken,
   reduceSession,
@@ -168,18 +170,25 @@ export const handleMessageEvent: EventHandler<
   MessageEventResponse
 > = socket => sessionsAPI => params =>
   pipe(
-    sessionsAPI.read(params.sessionId),
-    TE.flatMap(
-      TE.fromEitherK(session => getPlayerBySocketId(session)(socket.id)),
+    TE.Do,
+    TE.bind("sessionId", () =>
+      TE.fromEither(validateSessionId(params.sessionId)),
     ),
-    TE.map(
-      (player): MessageEventBroadcastParams => ({
-        kind: "guess",
+    TE.bindW("session", () => sessionsAPI.read(params.sessionId)),
+    TE.bindW("player", ({ session }) =>
+      TE.fromEither(getPlayerBySocketId(session)(socket.id)),
+    ),
+    TE.let(
+      "broadcastParams",
+      ({ player, session }): MessageEventBroadcastParams => ({
+        kind: didGuessWord(session)(params.message) ? "correct" : "guess",
         playerName: player.name,
-        message: params.message,
+        message: hideGuessIfCorrect(session)(player)(params.message),
       }),
     ),
-    TE.map(broadcastMessageEventToAll(socket)(params.sessionId)),
+    TE.tap(({ sessionId, broadcastParams }) =>
+      TE.right(broadcastMessageEventToAll(socket)(sessionId)(broadcastParams)),
+    ),
     TE.map(constVoid),
   )();
 

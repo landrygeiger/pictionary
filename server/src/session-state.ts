@@ -11,6 +11,8 @@ import {
   betweenFromSession,
   newPlayer,
   endingSession,
+  didGuessWord,
+  Player,
 } from "@pictionary/shared";
 import { match } from "ts-pattern";
 import * as E from "fp-ts/Either";
@@ -71,6 +73,12 @@ const hasPlayerWithSocket = (session: Session) => (socketId: string) =>
 const isValidTimerToken =
   (timerToken: string) => (session: RoundSessionState | BetweenSessionState) =>
     session.timerToken === timerToken;
+
+export const hideGuessIfCorrect =
+  (session: Session) => (player: Player) => (guess: string) =>
+    didGuessWord(session)(guess)
+      ? `${player.name} has guessed the word!`
+      : guess;
 
 export const getPlayerBySocketId = (session: Session) => (socketId: string) =>
   pipe(

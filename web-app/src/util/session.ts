@@ -11,6 +11,6 @@ export const getStatusMessage = (session: Session) =>
     )
     .with(
       { state: "round" },
-      session => `Round ending in ${session.timeLeft}...`,
+      session => `Round ending in ${session.timeLeft}... ${session.word}`,
     )
     .exhaustive();

@@ -54,6 +54,7 @@ export {
   newSession,
   newPlayer,
   endingSession,
+  didGuessWord,
 } from "./session";
 export { not, isEmptyArr, randomElement } from "./pure-util";
 export { validateName, validateSessionId } from "./validate";

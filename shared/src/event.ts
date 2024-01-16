@@ -67,7 +67,7 @@ export type MessageEventParams = {
 };
 
 export type MessageEventResponse = E.Either<
-  MutexError | NotFoundError | SessionError,
+  MutexError | NotFoundError | SessionError | ValidationError,
   void
 >;
 

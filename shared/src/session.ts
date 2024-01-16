@@ -137,3 +137,7 @@ export const newPlayer = (socketId: string, name: string): Player => ({
   score: 0,
   guessedWord: false,
 });
+
+export const didGuessWord = (session: Session) => (guess: string) =>
+  session.state === "round" &&
+  session.word.toLocaleLowerCase() === guess.toLocaleLowerCase();
