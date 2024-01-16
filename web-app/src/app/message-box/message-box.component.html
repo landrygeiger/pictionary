@@ -1,6 +1,10 @@
 <div class="message-container" #messageContainer>
   <p *ngFor="let receivedMessage of session.messages" class="message">
-    {{ receivedMessage.playerName }}: {{ receivedMessage.message }}
+    {{
+      (receivedMessage.kind === "guess"
+        ? receivedMessage.playerName + ": "
+        : "") + receivedMessage.message
+    }}
   </p>
 </div>
 <div class="message-input-container">
