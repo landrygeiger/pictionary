@@ -102,10 +102,10 @@ const getDrawer = (ps: Player[]) =>
     A.findFirst(p => p.drawing),
   );
 
-export const setPlayersGuessedFalse = (ps: Player[]) =>
+export const setPlayersGuessedFalse = (ps: Player[]): Player[] =>
   ps.map(p => ({ ...p, guessedWord: false }));
 
-export const setPlayersDrawingFalse = (ps: Player[]) =>
+export const setPlayersDrawingFalse = (ps: Player[]): Player[] =>
   ps.map(p => ({ ...p, drawing: false }));
 
 export const numGuessedWord = (ps: Player[]) =>
@@ -121,13 +121,12 @@ export const filterSessionsInState = (state: (typeof states)[number]) =>
 export const chooseNewDrawer = (session: Session) =>
   pipe(
     session.players,
-    setPlayersDrawingFalse,
     randomElement,
     p => ({
       ...p,
       drawing: true,
     }),
-    updatePlayerInList(session.players),
+    updatePlayerInList(setPlayersDrawingFalse(session.players)),
   );
 
 export const newRoundFromSession =

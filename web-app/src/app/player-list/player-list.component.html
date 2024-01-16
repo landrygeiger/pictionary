@@ -1,7 +1,7 @@
 <ul>
   <li
     *ngFor="let player of players | sortPlayers"
-    [ngClass]="{ 'guessed-word': player.guessedWord }"
+    [ngClass]="{ 'guessed-word': player.guessedWord, drawing: player.drawing }"
   >
     {{
       player.name + (player.owner ? " (owner)" : "") + " [" + player.score + "]"
