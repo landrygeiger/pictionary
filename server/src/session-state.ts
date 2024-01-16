@@ -78,12 +78,6 @@ const isValidTimerToken =
   (timerToken: string) => (session: RoundSessionState | BetweenSessionState) =>
     session.timerToken === timerToken;
 
-const hideGuessIfCorrect =
-  (session: Session) => (player: Player) => (guess: string) =>
-    didGuessWord(session)(guess)
-      ? `${player.name} has guessed the word!`
-      : guess;
-
 const messageFromGuess =
   (correct: boolean) =>
   (player: Player) =>
