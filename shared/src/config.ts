@@ -3,6 +3,7 @@ export const config = {
   maxNameLength: 16,
   roundLength: 60,
   betweenLength: 5,
+  maxScorePerGuess: 1000,
   words: [
     "Apple",
     "Banana",

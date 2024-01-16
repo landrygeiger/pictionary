@@ -13,6 +13,11 @@ import {
   endingSession,
   didGuessWord,
   Player,
+  updatePlayerInList,
+  calcScoreFromGuess,
+  updatePlayerInSessionIfCorrectGuess,
+  Message,
+  allPlayersGuessedWord,
 } from "@pictionary/shared";
 import { match } from "ts-pattern";
 import * as E from "fp-ts/Either";
@@ -27,8 +32,8 @@ type SessionAction =
   | JoinAction
   | LeaveAction
   | StartBetweenAction
-  | StartRoundAction
-  | TickAction;
+  | TickAction
+  | GuessAction;
 
 type JoinAction = {
   kind: "join";
@@ -46,16 +51,17 @@ type StartBetweenAction = {
   timerToken: string;
 };
 
-type StartRoundAction = {
-  kind: "start-round";
-  word: string;
-  timerToken: string;
-};
-
 type TickAction = {
   kind: "tick";
   timerToken: string;
   newWord: string;
+};
+
+type GuessAction = {
+  kind: "guess";
+  guess: string;
+  socketId: string;
+  newTimerToken: string;
 };
 
 const hasPlayerWithName = (session: Session) => (playerName: string) =>
@@ -74,11 +80,20 @@ const isValidTimerToken =
   (timerToken: string) => (session: RoundSessionState | BetweenSessionState) =>
     session.timerToken === timerToken;
 
-export const hideGuessIfCorrect =
+const hideGuessIfCorrect =
   (session: Session) => (player: Player) => (guess: string) =>
     didGuessWord(session)(guess)
       ? `${player.name} has guessed the word!`
       : guess;
+
+const messageFromGuess =
+  (correct: boolean) =>
+  (player: Player) =>
+  (guess: string): Message => ({
+    kind: correct ? "correct" : "guess",
+    message: correct ? `${player.name} has guessed the word!` : guess,
+    playerName: player.name,
+  });
 
 export const getPlayerBySocketId = (session: Session) => (socketId: string) =>
   pipe(
@@ -156,6 +171,46 @@ export const performTick =
       ),
     );
 
+export const performGuess =
+  (session: RoundSessionState) =>
+  (guess: string) =>
+  (socketId: string) =>
+  (newTimerToken: string) =>
+    pipe(
+      E.Do,
+      E.let("correct", () => didGuessWord(session)(guess)),
+      E.bind("player", () => getPlayerBySocketId(session)(socketId)),
+      E.map(
+        ({ correct, player }): RoundSessionState => ({
+          ...updatePlayerInSessionIfCorrectGuess(session)(correct)(player),
+          messages: [
+            ...session.messages,
+            messageFromGuess(correct)(player)(guess),
+          ],
+        }),
+      ),
+      E.map(session =>
+        allPlayersGuessedWord(session)
+          ? betweenFromSession(session)(newTimerToken)
+          : session,
+      ),
+    );
+
+export const performMessage =
+  (session: Session) => (message: string) => (socketId: string) =>
+    pipe(
+      getPlayerBySocketId(session)(socketId),
+      E.map(
+        (player): Session => ({
+          ...session,
+          messages: [
+            ...session.messages,
+            { playerName: player.name, message, kind: "guess" },
+          ],
+        }),
+      ),
+    );
+
 const handleJoinAction = (session: Session) => (action: JoinAction) =>
   match(session)
     .with({ state: "lobby" }, { state: "between" }, { state: "round" }, () =>
@@ -187,17 +242,6 @@ const handleStartBetweenAction =
       )
       .exhaustive();
 
-const handleStartRoundAction =
-  (session: Session) => (action: StartRoundAction) =>
-    match(session)
-      .with({ state: "lobby" }, { state: "between" }, { state: "round" }, () =>
-        performStartBetween(session)(action.timerToken),
-      )
-      .with({ state: "ending" }, () =>
-        E.left(sessionError("An ending session cannot be started.")),
-      )
-      .exhaustive();
-
 const handleTickAction = (session: Session) => (action: TickAction) =>
   match(session)
     .with({ state: "between" }, { state: "round" }, session =>
@@ -212,6 +256,18 @@ const handleTickAction = (session: Session) => (action: TickAction) =>
     )
     .exhaustive();
 
+const handleGuessAction = (session: Session) => (action: GuessAction) =>
+  match(session)
+    .with({ state: "round" }, session =>
+      performGuess(session)(action.guess)(action.socketId)(
+        action.newTimerToken,
+      ),
+    )
+    .with({ state: "between" }, { state: "lobby" }, { state: "ending" }, () =>
+      performMessage(session)(action.guess)(action.socketId),
+    )
+    .exhaustive();
+
 export const reduceSession =
   (action: SessionAction) =>
   (prev: Session): E.Either<SessionError, Session> =>
@@ -219,6 +275,6 @@ export const reduceSession =
       .with({ kind: "join" }, handleJoinAction(prev))
       .with({ kind: "leave" }, handleLeaveAction(prev))
       .with({ kind: "start-between" }, handleStartBetweenAction(prev))
-      .with({ kind: "start-round" }, handleStartRoundAction(prev))
       .with({ kind: "tick" }, handleTickAction(prev))
+      .with({ kind: "guess" }, handleGuessAction(prev))
       .exhaustive();

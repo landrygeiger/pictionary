@@ -1,5 +1,5 @@
 <div class="message-container" #messageContainer>
-  <p *ngFor="let receivedMessage of messages" class="message">
+  <p *ngFor="let receivedMessage of session.messages" class="message">
     {{ receivedMessage.playerName }}: {{ receivedMessage.message }}
   </p>
 </div>

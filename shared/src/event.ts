@@ -71,12 +71,6 @@ export type MessageEventResponse = E.Either<
   void
 >;
 
-export type MessageEventBroadcastParams = {
-  message: string;
-  playerName: string;
-  kind: "correct" | "guess";
-};
-
 export const START_EVENT = "start" as const;
 
 export type StartEventParams = { sessionId: string };

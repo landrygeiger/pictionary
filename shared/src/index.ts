@@ -16,7 +16,6 @@ export {
   type UpdateEventParams,
   type UpdateEventResponse,
   MESSAGE_EVENT,
-  type MessageEventBroadcastParams,
   type MessageEventParams,
   type MessageEventResponse,
   START_EVENT,
@@ -44,6 +43,7 @@ export {
   type LobbySessionState,
   type RoundSessionState,
   type BetweenSessionState,
+  type Message,
   playerEq,
   removePlayerFromList,
   removePlayerKeepListOwned,
@@ -55,6 +55,10 @@ export {
   newPlayer,
   endingSession,
   didGuessWord,
+  updatePlayerInList,
+  calcScoreFromGuess,
+  updatePlayerInSessionIfCorrectGuess,
+  allPlayersGuessedWord,
 } from "./session";
 export { not, isEmptyArr, randomElement } from "./pure-util";
 export { validateName, validateSessionId } from "./validate";
