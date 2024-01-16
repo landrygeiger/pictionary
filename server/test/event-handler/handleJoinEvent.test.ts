@@ -83,6 +83,7 @@ describe("handleJoinEvent", () => {
           owner: true,
           socketId: "test-socket-id-2",
           score: 0,
+          drawing: false,
           guessedWord: false,
         },
       ],
@@ -103,6 +104,7 @@ describe("handleJoinEvent", () => {
           socketId: "test-socket-id-2",
           score: 0,
           guessedWord: false,
+          drawing: false,
         },
         {
           name: params.playerName,
@@ -110,6 +112,7 @@ describe("handleJoinEvent", () => {
           socketId: socketMock.id as string,
           score: 0,
           guessedWord: false,
+          drawing: false,
         },
       ],
     });
@@ -141,6 +144,7 @@ describe("handleJoinEvent", () => {
         {
           name: "test-player-2",
           owner: true,
+          drawing: false,
           socketId: "test-socket-id-2",
           score: 0,
           guessedWord: false,
