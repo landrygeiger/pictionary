@@ -1,5 +1,5 @@
 <ul>
-  <li *ngFor="let player of players">
+  <li *ngFor="let player of players | sortPlayers">
     {{
       player.name + (player.owner ? " (owner)" : "") + " [" + player.score + "]"
     }}

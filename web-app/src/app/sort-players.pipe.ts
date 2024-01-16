@@ -9,6 +9,9 @@ import { pipe } from "fp-ts/lib/function";
 })
 export class SortPlayersPipe implements PipeTransform {
   transform(players: Player[]): Player[] {
-    return pipe(players, A.sort(byScore), A.reverse);
+    console.log("input:", players);
+    const result = pipe(players, A.sort(byScore), A.reverse);
+    console.log("result:", result);
+    return result;
   }
 }

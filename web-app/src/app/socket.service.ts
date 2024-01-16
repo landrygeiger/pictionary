@@ -57,7 +57,6 @@ export class SocketService {
   );
 
   private handleUpdateEvent = (session: UpdateEventParams) => {
-    console.log(session);
     this.session = session;
   };
 
