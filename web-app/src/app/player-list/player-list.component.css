@@ -20,3 +20,7 @@ li:not(:last-child) {
 .guessed-word {
   color: #00650e;
 }
+
+.drawing {
+  color: blue;
+}

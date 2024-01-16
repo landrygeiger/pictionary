@@ -3,10 +3,11 @@ import * as N from "fp-ts/number";
 import * as A from "fp-ts/Array";
 import * as S from "fp-ts/string";
 import * as B from "fp-ts/boolean";
-import { not } from "./pure-util";
+import { not, randomElement } from "./pure-util";
 import * as O from "fp-ts/Option";
 import { flip, identity, pipe } from "fp-ts/lib/function";
 import { config } from "./config";
+import { Refinement } from "fp-ts/lib/Refinement";
 
 const states = ["lobby", "ending", "round", "between"] as const;
 
@@ -51,6 +52,7 @@ export type Player = {
   socketId: string;
   guessedWord: boolean;
   score: number;
+  drawing: boolean;
 };
 
 export type Message = {
@@ -58,6 +60,10 @@ export type Message = {
   playerName: string;
   kind: "correct" | "guess";
 };
+
+export const isRoundState: Refinement<Session, RoundSessionState> = (
+  session: Session,
+): session is RoundSessionState => session.state === "round";
 
 export const playerEq = (p1: Player) => (p2: Player) =>
   S.Eq.equals(p1.name, p2.name) &&
@@ -94,11 +100,38 @@ export const removePlayerKeepListOwned = (ps: Player[]) => (p: Player) =>
 export const updatePlayerInList = (ps: Player[]) => (p: Player) =>
   [...A.filter(not(playerEq(p)))(ps), p];
 
-export const setPlayersGuessedFalse = (ps: Player[]) =>
+export const getDrawer = (ps: Player[]) =>
+  pipe(
+    ps,
+    A.findFirst(p => p.drawing),
+  );
+
+export const setPlayersGuessedFalse = (ps: Player[]): Player[] =>
   ps.map(p => ({ ...p, guessedWord: false }));
+
+export const setPlayersDrawingFalse = (ps: Player[]): Player[] =>
+  ps.map(p => ({ ...p, drawing: false }));
+
+export const numGuessedWord = (ps: Player[]) =>
+  pipe(
+    ps,
+    A.filter(p => p.guessedWord),
+    A.size,
+  );
 
 export const filterSessionsInState = (state: (typeof states)[number]) =>
   A.filter((session: Session) => session.state === state);
+
+export const chooseNewDrawer = (session: Session) =>
+  pipe(
+    session.players,
+    randomElement,
+    p => ({
+      ...p,
+      drawing: true,
+    }),
+    updatePlayerInList(setPlayersDrawingFalse(session.players)),
+  );
 
 export const newRoundFromSession =
   (session: Session) =>
@@ -107,11 +140,24 @@ export const newRoundFromSession =
     ...session,
     state: "round",
     word,
-    players: setPlayersGuessedFalse(session.players),
+    players: pipe(session, chooseNewDrawer, setPlayersGuessedFalse),
     timerToken,
     timeLeft: config.roundLength,
     messages: [],
   });
+
+export const updateDrawerAfterRound = (session: RoundSessionState) =>
+  pipe(
+    session.players,
+    getDrawer,
+    O.map(p =>
+      updatePlayerInList(session.players)({
+        ...p,
+        score: p.score + calcScoreAfterDrawing(session),
+      }),
+    ),
+    O.getOrElse(() => session.players),
+  );
 
 export const betweenFromSession =
   (session: Session) =>
@@ -120,6 +166,10 @@ export const betweenFromSession =
     state: "between",
     timerToken,
     timeLeft: config.betweenLength,
+    players:
+      session.state === "round"
+        ? updateDrawerAfterRound(session)
+        : session.players,
   });
 
 export const tickOneSecondFromSession = (
@@ -141,6 +191,7 @@ export const newSession = (
       owner: true,
       score: 0,
       guessedWord: false,
+      drawing: false,
     },
   ],
   messages: [],
@@ -157,6 +208,7 @@ export const newPlayer = (socketId: string, name: string): Player => ({
   owner: false,
   score: 0,
   guessedWord: false,
+  drawing: false,
 });
 
 export const byScore = Ord.contramap((p: Player) => p.score)(N.Ord);
@@ -168,6 +220,12 @@ export const didGuessWord = (session: Session) => (guess: string) =>
 export const calcScoreFromGuess = (session: RoundSessionState) =>
   Math.floor((config.maxScorePerGuess * session.timeLeft) / config.roundLength);
 
+export const calcScoreAfterDrawing = (session: RoundSessionState) =>
+  Math.floor(
+    (config.maxScorePerGuess * numGuessedWord(session.players)) /
+      session.players.length,
+  );
+
 export const updatePlayerInSessionIfCorrectGuess =
   (session: RoundSessionState) =>
   (correct: boolean) =>
@@ -177,7 +235,7 @@ export const updatePlayerInSessionIfCorrectGuess =
       ...player,
       guessedWord: correct,
       score:
-        correct && !player.guessedWord
+        correct && !player.guessedWord && !player.drawing
           ? calcScoreFromGuess(session) + player.score
           : player.score,
     }),
@@ -186,5 +244,5 @@ export const updatePlayerInSessionIfCorrectGuess =
 export const allPlayersGuessedWord = (session: Session) =>
   pipe(
     session.players,
-    A.every(player => player.guessedWord),
+    A.every(player => player.guessedWord || player.drawing),
   );

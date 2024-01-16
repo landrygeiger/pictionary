@@ -60,6 +60,8 @@ export {
   updatePlayerInSessionIfCorrectGuess,
   allPlayersGuessedWord,
   byScore,
+  getDrawer,
+  isRoundState,
 } from "./session";
-export { not, isEmptyArr, randomElement } from "./pure-util";
+export { not, isEmptyArr, randomElement, wordToBlanks } from "./pure-util";
 export { validateName, validateSessionId } from "./validate";

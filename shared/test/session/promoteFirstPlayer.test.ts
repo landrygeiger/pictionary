@@ -10,6 +10,7 @@ describe("promoteFirstPlayer", () => {
         owner: false,
         score: 0,
         guessedWord: false,
+        drawing: false,
       },
       {
         name: "Test Player 2",
@@ -17,12 +18,14 @@ describe("promoteFirstPlayer", () => {
         owner: false,
         score: 0,
         guessedWord: false,
+        drawing: false,
       },
       {
         name: "Test Player 3",
         socketId: "test-socket-id-3",
         owner: false,
         score: 0,
+        drawing: false,
         guessedWord: false,
       },
     ];
@@ -36,6 +39,7 @@ describe("promoteFirstPlayer", () => {
         owner: true,
         score: 0,
         guessedWord: false,
+        drawing: false,
       },
       {
         name: "Test Player 2",
@@ -43,6 +47,7 @@ describe("promoteFirstPlayer", () => {
         owner: false,
         score: 0,
         guessedWord: false,
+        drawing: false,
       },
       {
         name: "Test Player 3",
@@ -50,6 +55,7 @@ describe("promoteFirstPlayer", () => {
         owner: false,
         score: 0,
         guessedWord: false,
+        drawing: false,
       },
     ];
 
@@ -64,6 +70,7 @@ describe("promoteFirstPlayer", () => {
         owner: false,
         score: 0,
         guessedWord: false,
+        drawing: false,
       },
     ];
 
@@ -76,6 +83,7 @@ describe("promoteFirstPlayer", () => {
         owner: true,
         score: 0,
         guessedWord: false,
+        drawing: false,
       },
     ];
 

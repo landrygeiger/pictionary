@@ -13,6 +13,7 @@ describe("performRemovePlayer", () => {
       name: "Test Player 3",
       socketId: "test-socket-id-3",
       owner: false,
+      drawing: false,
       guessedWord: false,
       score: 0,
     };
@@ -26,6 +27,7 @@ describe("performRemovePlayer", () => {
           socketId: "test-socket-id-1",
           owner: false,
           score: 0,
+          drawing: false,
           guessedWord: false,
         },
         {
@@ -33,6 +35,7 @@ describe("performRemovePlayer", () => {
           socketId: "test-socket-id-2",
           owner: true,
           score: 0,
+          drawing: false,
           guessedWord: false,
         },
         p,
@@ -42,6 +45,7 @@ describe("performRemovePlayer", () => {
           owner: false,
           score: 0,
           guessedWord: false,
+          drawing: false,
         },
       ],
     };
@@ -57,6 +61,7 @@ describe("performRemovePlayer", () => {
           socketId: "test-socket-id-1",
           owner: false,
           score: 0,
+          drawing: false,
           guessedWord: false,
         },
         {
@@ -64,6 +69,7 @@ describe("performRemovePlayer", () => {
           socketId: "test-socket-id-2",
           owner: true,
           score: 0,
+          drawing: false,
           guessedWord: false,
         },
         {
@@ -71,6 +77,7 @@ describe("performRemovePlayer", () => {
           socketId: "test-socket-id-4",
           owner: false,
           score: 0,
+          drawing: false,
           guessedWord: false,
         },
       ],
@@ -83,6 +90,7 @@ describe("performRemovePlayer", () => {
     const p: Player = {
       name: "Test Player 3",
       socketId: "test-socket-id-3",
+      drawing: false,
       owner: true,
       guessedWord: false,
       score: 0,
@@ -96,6 +104,7 @@ describe("performRemovePlayer", () => {
           name: "Test Player 1",
           socketId: "test-socket-id-1",
           owner: false,
+          drawing: false,
           score: 0,
           guessedWord: false,
         },
@@ -103,6 +112,7 @@ describe("performRemovePlayer", () => {
           name: "Test Player 2",
           socketId: "test-socket-id-2",
           owner: false,
+          drawing: false,
           score: 0,
           guessedWord: false,
         },
@@ -112,6 +122,7 @@ describe("performRemovePlayer", () => {
           socketId: "test-socket-id-4",
           owner: false,
           score: 0,
+          drawing: false,
           guessedWord: false,
         },
       ],
@@ -127,12 +138,14 @@ describe("performRemovePlayer", () => {
           name: "Test Player 1",
           socketId: "test-socket-id-1",
           owner: true,
+          drawing: false,
           score: 0,
           guessedWord: false,
         },
         {
           name: "Test Player 2",
           socketId: "test-socket-id-2",
+          drawing: false,
           owner: false,
           score: 0,
           guessedWord: false,
@@ -142,6 +155,7 @@ describe("performRemovePlayer", () => {
           socketId: "test-socket-id-4",
           owner: false,
           score: 0,
+          drawing: false,
           guessedWord: false,
         },
       ],
@@ -154,6 +168,7 @@ describe("performRemovePlayer", () => {
     const p: Player = {
       name: "Test Player 3",
       socketId: "test-socket-id-3",
+      drawing: false,
       owner: false,
       guessedWord: false,
       score: 0,
@@ -188,6 +203,7 @@ describe("performRemovePlayer", () => {
           socketId: "test-socket-id-1",
           owner: false,
           score: 0,
+          drawing: false,
           guessedWord: false,
         },
         {
@@ -196,6 +212,7 @@ describe("performRemovePlayer", () => {
           owner: true,
           score: 0,
           guessedWord: false,
+          drawing: false,
         },
         {
           name: "Test player 3",
@@ -203,6 +220,7 @@ describe("performRemovePlayer", () => {
           owner: false,
           score: 0,
           guessedWord: false,
+          drawing: false,
         },
         {
           name: "Test Player 4",
@@ -210,6 +228,7 @@ describe("performRemovePlayer", () => {
           owner: false,
           score: 0,
           guessedWord: false,
+          drawing: false,
         },
       ],
     };

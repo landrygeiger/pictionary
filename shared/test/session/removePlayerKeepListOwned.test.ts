@@ -8,6 +8,7 @@ describe("removePlayerKeepListOwned", () => {
       owner: false,
       guessedWord: false,
       score: 0,
+      drawing: false,
     };
 
     const ps: Player[] = [
@@ -17,6 +18,7 @@ describe("removePlayerKeepListOwned", () => {
         owner: false,
         score: 0,
         guessedWord: false,
+        drawing: false,
       },
       {
         name: "Test Player 2",
@@ -24,6 +26,7 @@ describe("removePlayerKeepListOwned", () => {
         owner: true,
         score: 0,
         guessedWord: false,
+        drawing: false,
       },
       {
         name: "Test Player 3",
@@ -31,6 +34,7 @@ describe("removePlayerKeepListOwned", () => {
         owner: false,
         score: 0,
         guessedWord: false,
+        drawing: false,
       },
       p,
       {
@@ -39,6 +43,7 @@ describe("removePlayerKeepListOwned", () => {
         owner: false,
         score: 0,
         guessedWord: false,
+        drawing: false,
       },
     ];
 
@@ -51,6 +56,7 @@ describe("removePlayerKeepListOwned", () => {
         owner: false,
         score: 0,
         guessedWord: false,
+        drawing: false,
       },
       {
         name: "Test Player 2",
@@ -58,6 +64,7 @@ describe("removePlayerKeepListOwned", () => {
         owner: true,
         score: 0,
         guessedWord: false,
+        drawing: false,
       },
       {
         name: "Test Player 3",
@@ -65,6 +72,7 @@ describe("removePlayerKeepListOwned", () => {
         owner: false,
         score: 0,
         guessedWord: false,
+        drawing: false,
       },
       {
         name: "Test Player 5",
@@ -72,6 +80,7 @@ describe("removePlayerKeepListOwned", () => {
         owner: false,
         score: 0,
         guessedWord: false,
+        drawing: false,
       },
     ];
 
@@ -85,6 +94,7 @@ describe("removePlayerKeepListOwned", () => {
       owner: true,
       score: 0,
       guessedWord: false,
+      drawing: false,
     };
 
     const ps: Player[] = [
@@ -94,6 +104,7 @@ describe("removePlayerKeepListOwned", () => {
         owner: false,
         score: 0,
         guessedWord: false,
+        drawing: false,
       },
       p,
       {
@@ -102,6 +113,7 @@ describe("removePlayerKeepListOwned", () => {
         owner: false,
         score: 0,
         guessedWord: false,
+        drawing: false,
       },
       {
         name: "Test Player 4",
@@ -109,6 +121,7 @@ describe("removePlayerKeepListOwned", () => {
         owner: false,
         score: 0,
         guessedWord: false,
+        drawing: false,
       },
       {
         name: "Test Player 5",
@@ -116,6 +129,7 @@ describe("removePlayerKeepListOwned", () => {
         owner: false,
         score: 0,
         guessedWord: false,
+        drawing: false,
       },
     ];
 
@@ -128,6 +142,7 @@ describe("removePlayerKeepListOwned", () => {
         owner: true,
         score: 0,
         guessedWord: false,
+        drawing: false,
       },
       {
         name: "Test Player 3",
@@ -135,6 +150,7 @@ describe("removePlayerKeepListOwned", () => {
         owner: false,
         score: 0,
         guessedWord: false,
+        drawing: false,
       },
       {
         name: "Test Player 4",
@@ -142,6 +158,7 @@ describe("removePlayerKeepListOwned", () => {
         owner: false,
         score: 0,
         guessedWord: false,
+        drawing: false,
       },
       {
         name: "Test Player 5",
@@ -149,6 +166,7 @@ describe("removePlayerKeepListOwned", () => {
         owner: false,
         score: 0,
         guessedWord: false,
+        drawing: false,
       },
     ];
 
@@ -162,6 +180,7 @@ describe("removePlayerKeepListOwned", () => {
       guessedWord: false,
       socketId: "test-socket-id-1",
       owner: true,
+      drawing: false,
     };
 
     const ps: Player[] = [p];
