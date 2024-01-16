@@ -5,10 +5,9 @@ import {
   sessionError,
   Player,
   removePlayerKeepListOwned,
-  ROUND_LENGTH,
-  BETWEEN_LENGTH,
   RoundSessionState,
   BetweenSessionState,
+  config,
 } from "@pictionary/shared";
 import { match } from "ts-pattern";
 import * as E from "fp-ts/Either";
@@ -140,7 +139,7 @@ export const performStartBetween =
     E.right({
       ...session,
       state: "between",
-      timeLeft: BETWEEN_LENGTH,
+      timeLeft: config.betweenLength,
       timerToken,
     });
 
@@ -153,12 +152,12 @@ export const performNewRound =
       state: "round",
       word,
       timerToken,
-      timeLeft: ROUND_LENGTH,
+      timeLeft: config.roundLength,
     });
 
 export const performTick =
   (session: RoundSessionState | BetweenSessionState) =>
-  (newWord: string) =>
+  (word: string) =>
   (timerToken: string): E.Either<SessionError, Session> =>
     pipe(
       session,
@@ -171,14 +170,14 @@ export const performTick =
             ? {
                 ...session,
                 state: "between",
-                timeLeft: BETWEEN_LENGTH,
+                timeLeft: config.betweenLength,
               }
             : session.timeLeft === 1 && session.state === "between"
             ? {
                 ...session,
                 state: "round",
-                word: newWord,
-                timeLeft: ROUND_LENGTH,
+                word,
+                timeLeft: config.roundLength,
               }
             : {
                 ...session,

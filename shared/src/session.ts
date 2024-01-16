@@ -5,10 +5,6 @@ import { not } from "./pure-util";
 import * as O from "fp-ts/Option";
 import { flip, identity, pipe } from "fp-ts/lib/function";
 
-export const ROUND_LENGTH = 60;
-
-export const BETWEEN_LENGTH = 5;
-
 const states = ["lobby", "ending", "round", "between"] as const;
 
 export type Session =

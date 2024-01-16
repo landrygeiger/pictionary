@@ -1,9 +1,8 @@
 import {
-  BETWEEN_LENGTH,
   BetweenSessionState,
-  ROUND_LENGTH,
   RoundSessionState,
   SessionError,
+  config,
   sessionError,
 } from "@pictionary/shared";
 import * as E from "fp-ts/Either";
@@ -63,7 +62,7 @@ describe("performTick", () => {
 
     const expected: E.Either<never, RoundSessionState> = E.right({
       state: "round",
-      timeLeft: ROUND_LENGTH,
+      timeLeft: config.roundLength,
       timerToken: token,
       word: newWord,
       players: [],
@@ -88,7 +87,7 @@ describe("performTick", () => {
 
     const expected: E.Either<never, BetweenSessionState> = E.right({
       state: "between",
-      timeLeft: BETWEEN_LENGTH,
+      timeLeft: config.betweenLength,
       timerToken: token,
       word: "beanburrito",
       players: [],
