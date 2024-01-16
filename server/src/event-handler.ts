@@ -14,7 +14,6 @@ import {
   StartEventResponse,
   UPDATE_EVENT,
   UpdateEventParams,
-  didGuessWord,
   filterSessionsInState,
   newSession,
   validateName,

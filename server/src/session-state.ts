@@ -13,8 +13,6 @@ import {
   endingSession,
   didGuessWord,
   Player,
-  updatePlayerInList,
-  calcScoreFromGuess,
   updatePlayerInSessionIfCorrectGuess,
   Message,
   allPlayersGuessedWord,
