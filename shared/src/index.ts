@@ -59,6 +59,7 @@ export {
   calcScoreFromGuess,
   updatePlayerInSessionIfCorrectGuess,
   allPlayersGuessedWord,
+  byScore,
 } from "./session";
 export { not, isEmptyArr, randomElement } from "./pure-util";
 export { validateName, validateSessionId } from "./validate";

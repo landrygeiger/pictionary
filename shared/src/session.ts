@@ -1,3 +1,5 @@
+import * as Ord from "fp-ts/Ord";
+import * as N from "fp-ts/number";
 import * as A from "fp-ts/Array";
 import * as S from "fp-ts/string";
 import * as B from "fp-ts/boolean";
@@ -156,6 +158,8 @@ export const newPlayer = (socketId: string, name: string): Player => ({
   score: 0,
   guessedWord: false,
 });
+
+export const byScore = Ord.contramap((p: Player) => p.score)(N.Ord);
 
 export const didGuessWord = (session: Session) => (guess: string) =>
   session.state === "round" &&
