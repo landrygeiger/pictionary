@@ -43,6 +43,8 @@ export type Player = {
   name: string;
   owner: boolean;
   socketId: string;
+  guessedWord: boolean;
+  score: number;
 };
 
 export const playerEq = (p1: Player) => (p2: Player) =>
@@ -112,7 +114,15 @@ export const newSession = (
   ownerName: string,
 ): Session => ({
   state: "lobby",
-  players: [{ socketId: ownerSocketId, name: ownerName, owner: true }],
+  players: [
+    {
+      socketId: ownerSocketId,
+      name: ownerName,
+      owner: true,
+      score: 0,
+      guessedWord: false,
+    },
+  ],
 });
 
 export const endingSession = (session: Session): Session => ({
@@ -124,4 +134,6 @@ export const newPlayer = (socketId: string, name: string): Player => ({
   socketId,
   name,
   owner: false,
+  score: 0,
+  guessedWord: false,
 });
