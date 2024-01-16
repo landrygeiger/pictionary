@@ -180,7 +180,7 @@ export const updatePlayerInSessionIfCorrectGuess =
       ...player,
       guessedWord: correct,
       score:
-        correct && !player.guessedWord
+        correct && !player.guessedWord && !player.drawing
           ? calcScoreFromGuess(session) + player.score
           : player.score,
     }),
