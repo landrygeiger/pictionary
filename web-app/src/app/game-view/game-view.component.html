@@ -2,7 +2,13 @@
   {{ this.status() }}
 </h1>
 <p>Session Id: {{ session.id }}</p>
-<button (click)="this.handleStart()">Start</button>
+<button
+  (click)="this.handleStart()"
+  *ngIf="session.state === 'lobby' && socketService.getCurrentPlayer()?.owner"
+  class="start-button"
+>
+  Start Game
+</button>
 <div class="view-container">
   <app-message-box></app-message-box>
   <app-canvas></app-canvas>

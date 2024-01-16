@@ -1,3 +1,5 @@
+import * as A from "fp-ts/Array";
+import * as O from "fp-ts/Option";
 import { Injectable, isDevMode } from "@angular/core";
 import {
   CREATE_EVENT,
@@ -23,7 +25,8 @@ import { io } from "socket.io-client";
 import { emitter } from "../util/socket-util";
 import { Subject } from "rxjs";
 import * as E from "fp-ts/Either";
-import { flow } from "fp-ts/lib/function";
+import { flow, pipe } from "fp-ts/lib/function";
+import { pipeable } from "fp-ts";
 
 @Injectable({
   providedIn: "root",
@@ -82,4 +85,11 @@ export class SocketService {
   public emitMessage = emitter<MessageEventParams>(this.socket, MESSAGE_EVENT);
 
   public emitStart = emitter<StartEventParams>(this.socket, START_EVENT);
+
+  public getCurrentPlayer = () =>
+    pipe(
+      this.session?.players ?? [],
+      A.findFirst(p => p.socketId === this.socket.id),
+      O.toUndefined,
+    );
 }
