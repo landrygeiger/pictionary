@@ -1,5 +1,4 @@
 import { Component, Input } from "@angular/core";
-import * as B from "fp-ts/boolean";
 import * as S from "fp-ts/string";
 import * as O from "fp-ts/Option";
 import { CanvasComponent } from "../canvas/canvas.component";
