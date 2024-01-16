@@ -2,3 +2,7 @@
   display: flex;
   gap: 4px;
 }
+
+.start-button {
+  margin-bottom: 16px;
+}

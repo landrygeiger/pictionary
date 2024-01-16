@@ -76,3 +76,12 @@ export type MessageEventBroadcastParams = {
   playerName: string;
   kind: "correct" | "guess";
 };
+
+export const START_EVENT = "start" as const;
+
+export type StartEventParams = { sessionId: string };
+
+export type StartEventResponse = E.Either<
+  MutexError | SessionError | ValidationError | NotFoundError,
+  void
+>;

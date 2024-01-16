@@ -19,6 +19,9 @@ export {
   type MessageEventBroadcastParams,
   type MessageEventParams,
   type MessageEventResponse,
+  START_EVENT,
+  type StartEventParams,
+  type StartEventResponse,
 } from "./event";
 export { type CanvasConfig } from "./canvas";
 export { config } from "./config";
@@ -39,10 +42,18 @@ export {
   type Player,
   type EndingSessionState,
   type LobbySessionState,
+  type RoundSessionState,
+  type BetweenSessionState,
   playerEq,
   removePlayerFromList,
   removePlayerKeepListOwned,
   filterSessionsInState,
+  newRoundFromSession,
+  tickOneSecondFromSession,
+  betweenFromSession,
+  newSession,
+  newPlayer,
+  endingSession,
 } from "./session";
 export { not, isEmptyArr } from "./pure-util";
 export { validateName, validateSessionId } from "./validate";

@@ -8,6 +8,7 @@ import {
   DRAW_EVENT,
   JOIN_EVENT,
   MESSAGE_EVENT,
+  START_EVENT,
   config,
 } from "@pictionary/shared";
 import {
@@ -16,6 +17,7 @@ import {
   handleDrawEvent,
   handleJoinEvent,
   handleMessageEvent,
+  handleStartEvent,
   socketEventHandler,
 } from "./event-handler";
 import "dotenv/config";
@@ -50,6 +52,7 @@ io.on("connection", socket => {
   socket.on(JOIN_EVENT, handler(handleJoinEvent));
   socket.on(DISCONNECT_EVENT, handler(handleDisconnectEvent));
   socket.on(MESSAGE_EVENT, handler(handleMessageEvent));
+  socket.on(START_EVENT, handler(handleStartEvent));
 });
 
 server.listen(port, () => {
