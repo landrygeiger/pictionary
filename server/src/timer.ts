@@ -1,6 +1,6 @@
 import { pipe } from "fp-ts/lib/function";
 import { StoreAPI } from "./store";
-import { Session } from "@pictionary/shared";
+import { Session, config, randomElement } from "@pictionary/shared";
 import { reduceSession } from "./session-state";
 import * as TE from "fp-ts/TaskEither";
 import { broadcastSessionUpdateToAll } from "./event-handler";
@@ -21,7 +21,11 @@ const tick =
     pipe(
       sessionsAPI.updateEither(sessionId)(
         // TODO: words
-        reduceSession({ kind: "tick", timerToken, newWord: "beans" }),
+        reduceSession({
+          kind: "tick",
+          timerToken,
+          newWord: randomElement(config.words),
+        }),
       ),
       TE.map(session =>
         broadcastSessionUpdateToAll(socket)(sessionId)({

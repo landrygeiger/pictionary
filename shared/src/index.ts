@@ -55,5 +55,5 @@ export {
   newPlayer,
   endingSession,
 } from "./session";
-export { not, isEmptyArr } from "./pure-util";
+export { not, isEmptyArr, randomElement } from "./pure-util";
 export { validateName, validateSessionId } from "./validate";

@@ -8,3 +8,6 @@ export const isEmptyStr = (s: string) => s.length === 0;
 export const isEmptyArr = <A>(as: A[]) => as.length === 0;
 
 export const isLongerThan = (n: number) => (s: string) => s.length > n;
+
+export const randomElement = <A>(as: A[]) =>
+  as[Math.floor(Math.random() * as.length)];
