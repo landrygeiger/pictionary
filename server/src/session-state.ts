@@ -156,7 +156,7 @@ export const performNewRound =
       timeLeft: ROUND_LENGTH,
     });
 
-const performTick =
+export const performTick =
   (session: RoundSessionState | BetweenSessionState) =>
   (newWord: string) =>
   (timerToken: string): E.Either<SessionError, Session> =>
