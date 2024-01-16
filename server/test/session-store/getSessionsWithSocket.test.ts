@@ -20,6 +20,7 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket1",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
           {
             name: "Bob",
@@ -27,6 +28,7 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket2",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
           {
             name: "Charlie",
@@ -34,6 +36,7 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket3",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
         ],
         messages: [],
@@ -48,6 +51,7 @@ describe("getSessionsWithSocket", () => {
             socketId: socketId,
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
           {
             name: "Eva",
@@ -55,6 +59,7 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket5",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
           {
             name: "Frank",
@@ -62,6 +67,7 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket6",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
           {
             name: "Grace",
@@ -69,6 +75,7 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket7",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
         ],
         messages: [],
@@ -83,6 +90,7 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket8",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
           {
             name: "Isabel",
@@ -90,6 +98,7 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket9",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
           {
             name: "Jack",
@@ -97,6 +106,7 @@ describe("getSessionsWithSocket", () => {
             socketId: socketId,
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
         ],
         messages: [],
@@ -111,6 +121,7 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket10",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
           {
             name: "Liam",
@@ -118,6 +129,7 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket11",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
           {
             name: "Mia",
@@ -125,6 +137,7 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket12",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
           {
             name: "Noah",
@@ -132,6 +145,7 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket14",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
         ],
         messages: [],
@@ -169,6 +183,7 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket1",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
           {
             name: "Bob",
@@ -176,6 +191,7 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket2",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
           {
             name: "Charlie",
@@ -183,6 +199,7 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket3",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
         ],
         messages: [],
@@ -197,6 +214,7 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket17",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
           {
             name: "Eva",
@@ -204,6 +222,7 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket5",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
           {
             name: "Frank",
@@ -211,6 +230,7 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket6",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
           {
             name: "Grace",
@@ -218,6 +238,7 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket7",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
         ],
         messages: [],
@@ -232,6 +253,7 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket8",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
           {
             name: "Isabel",
@@ -239,6 +261,7 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket9",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
           {
             name: "Jack",
@@ -246,6 +269,7 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket17",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
         ],
         state: "lobby",
@@ -260,6 +284,7 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket10",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
           {
             name: "Liam",
@@ -267,6 +292,7 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket11",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
           {
             name: "Mia",
@@ -274,11 +300,13 @@ describe("getSessionsWithSocket", () => {
             socketId: "socket12",
             score: 0,
             guessedWord: false,
+            drawing: false,
           },
           {
             name: "Noah",
             owner: false,
             socketId: "socket14",
+            drawing: false,
             score: 0,
             guessedWord: false,
           },
