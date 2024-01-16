@@ -12,6 +12,8 @@ import {
   MessageEventParams,
   MessageEventResponse,
   Session,
+  StartEventParams,
+  StartEventResponse,
   UPDATE_EVENT,
   UpdateEventParams,
   filterSessionsInState,
@@ -27,9 +29,11 @@ import * as A from "fp-ts/Array";
 import {
   getPlayerBySocketId,
   newSessionId,
+  newTimerToken,
   reduceSession,
 } from "./session-state";
 import { getSessionsWithSocket, leaveSessions } from "./session-store";
+import { startSessionTimer } from "./timer";
 
 export const broadcastToRestOfRoom =
   <Params>(event: string) =>
@@ -50,13 +54,16 @@ export const broadcastToRoomAndClient =
 export const broadcastSessionUpdate =
   broadcastToRestOfRoom<UpdateEventParams>(UPDATE_EVENT);
 
+export const broadcastSessionUpdateToAll =
+  broadcastToRoomAndClient<UpdateEventParams>(UPDATE_EVENT);
+
 export const broadcastDrawEvent =
   broadcastToRestOfRoom<DrawEventParams>(DRAW_EVENT);
 
 export const handleDrawEvent = (socket: Socket) => (params: DrawEventParams) =>
   broadcastDrawEvent(socket)(params.sessionId)(params);
 
-export const broadcastMessageEvent =
+export const broadcastMessageEventToAll =
   broadcastToRoomAndClient<MessageEventBroadcastParams>(MESSAGE_EVENT);
 
 type EventHandler<Params, Response> = (
@@ -172,6 +179,35 @@ export const handleMessageEvent: EventHandler<
         message: params.message,
       }),
     ),
-    TE.map(broadcastMessageEvent(socket)(params.sessionId)),
+    TE.map(broadcastMessageEventToAll(socket)(params.sessionId)),
+    TE.map(constVoid),
+  )();
+
+export const handleStartEvent: EventHandler<
+  StartEventParams,
+  StartEventResponse
+> = socket => sessionsAPI => params =>
+  pipe(
+    TE.Do,
+    TE.bind("sessionId", () =>
+      TE.fromEither(validateSessionId(params.sessionId)),
+    ),
+    TE.let("timerToken", () => newTimerToken()),
+    TE.bindW("startedSession", ({ sessionId, timerToken }) =>
+      sessionsAPI.updateEither(sessionId)(
+        reduceSession({ kind: "start-between", timerToken }),
+      ),
+    ),
+    TE.tap(({ startedSession, sessionId }) =>
+      TE.right(
+        broadcastSessionUpdateToAll(socket)(sessionId)({
+          id: sessionId,
+          ...startedSession,
+        }),
+      ),
+    ),
+    TE.tap(({ sessionId, timerToken }) =>
+      TE.right(startSessionTimer(socket)(sessionsAPI)(sessionId)(timerToken)),
+    ),
     TE.map(constVoid),
   )();

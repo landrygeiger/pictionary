@@ -81,4 +81,7 @@ export const START_EVENT = "start" as const;
 
 export type StartEventParams = { sessionId: string };
 
-export type StartEventResponse = E.Either<MutexError | SessionError, void>;
+export type StartEventResponse = E.Either<
+  MutexError | SessionError | ValidationError | NotFoundError,
+  void
+>;
