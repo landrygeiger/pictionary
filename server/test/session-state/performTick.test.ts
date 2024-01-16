@@ -59,7 +59,16 @@ describe("performTick", () => {
       timeLeft: 1,
       timerToken: token,
       messages: [],
-      players: [],
+      players: [
+        {
+          name: "bill",
+          socketId: "test-socket-id",
+          owner: true,
+          drawing: false,
+          guessedWord: true,
+          score: 0,
+        },
+      ],
     };
 
     const result = performTick(session)(newWord)(token);
@@ -69,7 +78,16 @@ describe("performTick", () => {
       timeLeft: config.roundLength,
       timerToken: token,
       word: newWord,
-      players: [],
+      players: [
+        {
+          name: "bill",
+          socketId: "test-socket-id",
+          owner: true,
+          drawing: true,
+          guessedWord: false,
+          score: 0,
+        },
+      ],
       messages: [],
     });
 
