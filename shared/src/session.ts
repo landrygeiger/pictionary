@@ -241,5 +241,5 @@ export const updatePlayerInSessionIfCorrectGuess =
 export const allPlayersGuessedWord = (session: Session) =>
   pipe(
     session.players,
-    A.every(player => player.guessedWord),
+    A.every(player => player.guessedWord || player.drawing),
   );
