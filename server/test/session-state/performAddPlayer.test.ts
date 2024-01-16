@@ -17,6 +17,7 @@ describe("performAddPlayer", () => {
           owner: true,
           score: 0,
           guessedWord: false,
+          drawing: false,
         },
         {
           name: "Test Player 2",
@@ -24,6 +25,7 @@ describe("performAddPlayer", () => {
           owner: false,
           score: 0,
           guessedWord: false,
+          drawing: false,
         },
       ],
     };
@@ -40,6 +42,7 @@ describe("performAddPlayer", () => {
           owner: true,
           score: 0,
           guessedWord: false,
+          drawing: false,
         },
         {
           name: "Test Player 2",
@@ -47,6 +50,7 @@ describe("performAddPlayer", () => {
           owner: false,
           score: 0,
           guessedWord: false,
+          drawing: false,
         },
         {
           name: playerName,
@@ -54,6 +58,7 @@ describe("performAddPlayer", () => {
           owner: false,
           score: 0,
           guessedWord: false,
+          drawing: false,
         },
       ],
     });
@@ -75,6 +80,7 @@ describe("performAddPlayer", () => {
           owner: true,
           score: 0,
           guessedWord: false,
+          drawing: false,
         },
         {
           name: playerName,
@@ -82,6 +88,7 @@ describe("performAddPlayer", () => {
           owner: false,
           score: 0,
           guessedWord: false,
+          drawing: false,
         },
       ],
     };
@@ -109,6 +116,7 @@ describe("performAddPlayer", () => {
           owner: true,
           score: 0,
           guessedWord: false,
+          drawing: false,
         },
         {
           name: "Test Player 2",
@@ -116,6 +124,7 @@ describe("performAddPlayer", () => {
           owner: false,
           score: 0,
           guessedWord: false,
+          drawing: false,
         },
       ],
     };

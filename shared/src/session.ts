@@ -51,6 +51,7 @@ export type Player = {
   socketId: string;
   guessedWord: boolean;
   score: number;
+  drawing: boolean;
 };
 
 export type Message = {
@@ -141,6 +142,7 @@ export const newSession = (
       owner: true,
       score: 0,
       guessedWord: false,
+      drawing: false,
     },
   ],
   messages: [],
@@ -157,6 +159,7 @@ export const newPlayer = (socketId: string, name: string): Player => ({
   owner: false,
   score: 0,
   guessedWord: false,
+  drawing: false,
 });
 
 export const byScore = Ord.contramap((p: Player) => p.score)(N.Ord);

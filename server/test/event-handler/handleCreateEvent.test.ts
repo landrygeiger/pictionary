@@ -62,6 +62,7 @@ describe("handleCreateEvent", () => {
           socketId: socketMock.id as string,
           score: 0,
           guessedWord: false,
+          drawing: false,
         },
       ],
     };
