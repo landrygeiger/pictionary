@@ -3,10 +3,11 @@ import * as N from "fp-ts/number";
 import * as A from "fp-ts/Array";
 import * as S from "fp-ts/string";
 import * as B from "fp-ts/boolean";
-import { not } from "./pure-util";
+import { not, randomElement } from "./pure-util";
 import * as O from "fp-ts/Option";
 import { flip, identity, pipe } from "fp-ts/lib/function";
 import { config } from "./config";
+import { randomElem } from "fp-ts/lib/Random";
 
 const states = ["lobby", "ending", "round", "between"] as const;
 
@@ -95,11 +96,39 @@ export const removePlayerKeepListOwned = (ps: Player[]) => (p: Player) =>
 export const updatePlayerInList = (ps: Player[]) => (p: Player) =>
   [...A.filter(not(playerEq(p)))(ps), p];
 
+const getDrawer = (ps: Player[]) =>
+  pipe(
+    ps,
+    A.findFirst(p => p.drawing),
+  );
+
 export const setPlayersGuessedFalse = (ps: Player[]) =>
   ps.map(p => ({ ...p, guessedWord: false }));
 
+export const setPlayersDrawingFalse = (ps: Player[]) =>
+  ps.map(p => ({ ...p, drawing: false }));
+
+export const numGuessedWord = (ps: Player[]) =>
+  pipe(
+    ps,
+    A.filter(p => p.guessedWord),
+    A.size,
+  );
+
 export const filterSessionsInState = (state: (typeof states)[number]) =>
   A.filter((session: Session) => session.state === state);
+
+export const chooseNewDrawer = (session: Session) =>
+  pipe(
+    session.players,
+    setPlayersDrawingFalse,
+    randomElement,
+    p => ({
+      ...p,
+      drawing: true,
+    }),
+    updatePlayerInList(session.players),
+  );
 
 export const newRoundFromSession =
   (session: Session) =>
@@ -108,11 +137,24 @@ export const newRoundFromSession =
     ...session,
     state: "round",
     word,
-    players: setPlayersGuessedFalse(session.players),
+    players: pipe(session, chooseNewDrawer, setPlayersGuessedFalse),
     timerToken,
     timeLeft: config.roundLength,
     messages: [],
   });
+
+export const updateDrawerAfterRound = (session: RoundSessionState) =>
+  pipe(
+    session.players,
+    getDrawer,
+    O.map(p =>
+      updatePlayerInList(session.players)({
+        ...p,
+        score: p.score + calcScoreAfterDrawing(session),
+      }),
+    ),
+    O.getOrElse(() => session.players),
+  );
 
 export const betweenFromSession =
   (session: Session) =>
@@ -121,6 +163,10 @@ export const betweenFromSession =
     state: "between",
     timerToken,
     timeLeft: config.betweenLength,
+    players:
+      session.state === "round"
+        ? updateDrawerAfterRound(session)
+        : session.players,
   });
 
 export const tickOneSecondFromSession = (
@@ -170,6 +216,12 @@ export const didGuessWord = (session: Session) => (guess: string) =>
 
 export const calcScoreFromGuess = (session: RoundSessionState) =>
   Math.floor((config.maxScorePerGuess * session.timeLeft) / config.roundLength);
+
+export const calcScoreAfterDrawing = (session: RoundSessionState) =>
+  Math.floor(
+    (config.maxScorePerGuess * numGuessedWord(session.players)) /
+      session.players.length,
+  );
 
 export const updatePlayerInSessionIfCorrectGuess =
   (session: RoundSessionState) =>
