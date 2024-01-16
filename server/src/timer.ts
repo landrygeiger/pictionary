@@ -20,7 +20,6 @@ const tick =
   (timerToken: string): any =>
     pipe(
       sessionsAPI.updateEither(sessionId)(
-        // TODO: words
         reduceSession({
           kind: "tick",
           timerToken,
