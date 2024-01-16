@@ -2,6 +2,7 @@
   {{ this.status() }}
 </h1>
 <p>Session Id: {{ session.id }}</p>
+<h2>{{ this.getWhoDrawingMessage() }}</h2>
 <button
   (click)="this.handleStart()"
   *ngIf="session.state === 'lobby' && socketService.getCurrentPlayer()?.owner"

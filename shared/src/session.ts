@@ -7,7 +7,7 @@ import { not, randomElement } from "./pure-util";
 import * as O from "fp-ts/Option";
 import { flip, identity, pipe } from "fp-ts/lib/function";
 import { config } from "./config";
-import { randomElem } from "fp-ts/lib/Random";
+import { Refinement } from "fp-ts/lib/Refinement";
 
 const states = ["lobby", "ending", "round", "between"] as const;
 
@@ -61,6 +61,10 @@ export type Message = {
   kind: "correct" | "guess";
 };
 
+export const isRoundState: Refinement<Session, RoundSessionState> = (
+  session: Session,
+): session is RoundSessionState => session.state === "round";
+
 export const playerEq = (p1: Player) => (p2: Player) =>
   S.Eq.equals(p1.name, p2.name) &&
   B.Eq.equals(p1.owner, p2.owner) &&
@@ -96,7 +100,7 @@ export const removePlayerKeepListOwned = (ps: Player[]) => (p: Player) =>
 export const updatePlayerInList = (ps: Player[]) => (p: Player) =>
   [...A.filter(not(playerEq(p)))(ps), p];
 
-const getDrawer = (ps: Player[]) =>
+export const getDrawer = (ps: Player[]) =>
   pipe(
     ps,
     A.findFirst(p => p.drawing),
