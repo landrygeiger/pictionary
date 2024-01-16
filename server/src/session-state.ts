@@ -3,36 +3,20 @@ import {
   SessionError,
   not,
   sessionError,
-  Player,
   removePlayerKeepListOwned,
   RoundSessionState,
   BetweenSessionState,
-  config,
+  newRoundFromSession,
+  tickOneSecondFromSession,
+  betweenFromSession,
+  newPlayer,
+  endingSession,
 } from "@pictionary/shared";
 import { match } from "ts-pattern";
 import * as E from "fp-ts/Either";
 import * as A from "fp-ts/Array";
 import { pipe } from "fp-ts/lib/function";
 import { v4 as uuidv4 } from "uuid";
-
-export const newSession = (
-  ownerSocketId: string,
-  ownerName: string,
-): Session => ({
-  state: "lobby",
-  players: [{ socketId: ownerSocketId, name: ownerName, owner: true }],
-});
-
-export const endingSession = (session: Session): Session => ({
-  ...session,
-  state: "ending",
-});
-
-const newPlayer = (socketId: string, name: string): Player => ({
-  socketId,
-  name,
-  owner: false,
-});
 
 export const newSessionId = uuidv4;
 
@@ -136,24 +120,13 @@ export const performRemovePlayer =
 export const performStartBetween =
   (session: Session) =>
   (timerToken: string): E.Either<never, Session> =>
-    E.right({
-      ...session,
-      state: "between",
-      timeLeft: config.betweenLength,
-      timerToken,
-    });
+    E.right(betweenFromSession(session)(timerToken));
 
 export const performNewRound =
   (session: Session) =>
   (word: string) =>
   (timerToken: string): E.Either<never, Session> =>
-    E.right({
-      ...session,
-      state: "round",
-      word,
-      timerToken,
-      timeLeft: config.roundLength,
-    });
+    E.right(newRoundFromSession(session)(word)(timerToken));
 
 export const performTick =
   (session: RoundSessionState | BetweenSessionState) =>
@@ -167,22 +140,10 @@ export const performTick =
       E.map(
         (session): Session =>
           session.timeLeft === 1 && session.state === "round"
-            ? {
-                ...session,
-                state: "between",
-                timeLeft: config.betweenLength,
-              }
+            ? betweenFromSession(session)(timerToken)
             : session.timeLeft === 1 && session.state === "between"
-            ? {
-                ...session,
-                state: "round",
-                word,
-                timeLeft: config.roundLength,
-              }
-            : {
-                ...session,
-                timeLeft: session.timeLeft - 1,
-              },
+            ? newRoundFromSession(session)(word)(timerToken)
+            : tickOneSecondFromSession(session),
       ),
     );
 

@@ -15,6 +15,7 @@ import {
   UPDATE_EVENT,
   UpdateEventParams,
   filterSessionsInState,
+  newSession,
   validateName,
   validateSessionId,
 } from "@pictionary/shared";
@@ -25,7 +26,6 @@ import * as TE from "fp-ts/TaskEither";
 import * as A from "fp-ts/Array";
 import {
   getPlayerBySocketId,
-  newSession,
   newSessionId,
   reduceSession,
 } from "./session-state";
