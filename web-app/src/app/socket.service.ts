@@ -11,7 +11,9 @@ import {
   MESSAGE_EVENT,
   MessageEventBroadcastParams,
   MessageEventParams,
+  START_EVENT,
   Session,
+  StartEventParams,
   UPDATE_EVENT,
   UpdateEventParams,
   WithId,
@@ -78,4 +80,6 @@ export class SocketService {
   );
 
   public emitMessage = emitter<MessageEventParams>(this.socket, MESSAGE_EVENT);
+
+  public emitStart = emitter<StartEventParams>(this.socket, START_EVENT);
 }

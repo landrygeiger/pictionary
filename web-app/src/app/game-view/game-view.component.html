@@ -2,6 +2,7 @@
   {{ this.status() }}
 </h1>
 <p>Session Id: {{ session.id }}</p>
+<button (click)="this.handleStart()">Start</button>
 <div class="view-container">
   <app-message-box></app-message-box>
   <app-canvas></app-canvas>

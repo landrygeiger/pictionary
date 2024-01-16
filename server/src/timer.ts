@@ -30,6 +30,9 @@ const tick =
         }),
       ),
       TE.map(() =>
-        setTimeout(tick(socket)(sessionsAPI)(sessionId)(timerToken), 1000),
+        setTimeout(
+          () => tick(socket)(sessionsAPI)(sessionId)(timerToken),
+          1000,
+        ),
       ),
     )();
