@@ -1,3 +1,5 @@
+import * as Ord from "fp-ts/Ord";
+import * as N from "fp-ts/number";
 import * as A from "fp-ts/Array";
 import * as S from "fp-ts/string";
 import * as B from "fp-ts/boolean";
@@ -17,11 +19,13 @@ export type Session =
 export type LobbySessionState = {
   state: (typeof states)[0];
   players: Player[];
+  messages: Message[];
 };
 
 export type EndingSessionState = {
   state: (typeof states)[1];
   players: Player[];
+  messages: Message[];
 };
 
 export type RoundSessionState = {
@@ -30,6 +34,7 @@ export type RoundSessionState = {
   timerToken: string;
   word: string;
   players: Player[];
+  messages: Message[];
 };
 
 export type BetweenSessionState = {
@@ -37,12 +42,21 @@ export type BetweenSessionState = {
   timeLeft: number;
   timerToken: string;
   players: Player[];
+  messages: Message[];
 };
 
 export type Player = {
   name: string;
   owner: boolean;
   socketId: string;
+  guessedWord: boolean;
+  score: number;
+};
+
+export type Message = {
+  message: string;
+  playerName: string;
+  kind: "correct" | "guess";
 };
 
 export const playerEq = (p1: Player) => (p2: Player) =>
@@ -77,6 +91,12 @@ export const removePlayerKeepListOwned = (ps: Player[]) => (p: Player) =>
     p.owner ? promoteFirstPlayer : identity,
   );
 
+export const updatePlayerInList = (ps: Player[]) => (p: Player) =>
+  [...A.filter(not(playerEq(p)))(ps), p];
+
+export const setPlayersGuessedFalse = (ps: Player[]) =>
+  ps.map(p => ({ ...p, guessedWord: false }));
+
 export const filterSessionsInState = (state: (typeof states)[number]) =>
   A.filter((session: Session) => session.state === state);
 
@@ -87,8 +107,10 @@ export const newRoundFromSession =
     ...session,
     state: "round",
     word,
+    players: setPlayersGuessedFalse(session.players),
     timerToken,
     timeLeft: config.roundLength,
+    messages: [],
   });
 
 export const betweenFromSession =
@@ -112,7 +134,16 @@ export const newSession = (
   ownerName: string,
 ): Session => ({
   state: "lobby",
-  players: [{ socketId: ownerSocketId, name: ownerName, owner: true }],
+  players: [
+    {
+      socketId: ownerSocketId,
+      name: ownerName,
+      owner: true,
+      score: 0,
+      guessedWord: false,
+    },
+  ],
+  messages: [],
 });
 
 export const endingSession = (session: Session): Session => ({
@@ -124,4 +155,36 @@ export const newPlayer = (socketId: string, name: string): Player => ({
   socketId,
   name,
   owner: false,
+  score: 0,
+  guessedWord: false,
 });
+
+export const byScore = Ord.contramap((p: Player) => p.score)(N.Ord);
+
+export const didGuessWord = (session: Session) => (guess: string) =>
+  session.state === "round" &&
+  session.word.toLocaleLowerCase() === guess.toLocaleLowerCase();
+
+export const calcScoreFromGuess = (session: RoundSessionState) =>
+  Math.floor((config.maxScorePerGuess * session.timeLeft) / config.roundLength);
+
+export const updatePlayerInSessionIfCorrectGuess =
+  (session: RoundSessionState) =>
+  (correct: boolean) =>
+  (player: Player): RoundSessionState => ({
+    ...session,
+    players: updatePlayerInList(session.players)({
+      ...player,
+      guessedWord: correct,
+      score:
+        correct && !player.guessedWord
+          ? calcScoreFromGuess(session) + player.score
+          : player.score,
+    }),
+  });
+
+export const allPlayersGuessedWord = (session: Session) =>
+  pipe(
+    session.players,
+    A.every(player => player.guessedWord),
+  );

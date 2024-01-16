@@ -76,8 +76,15 @@ describe("handleJoinEvent", () => {
 
     sessions.data.set(params.sessionId, {
       state: "lobby",
+      messages: [],
       players: [
-        { name: "test-player-2", owner: true, socketId: "test-socket-id-2" },
+        {
+          name: "test-player-2",
+          owner: true,
+          socketId: "test-socket-id-2",
+          score: 0,
+          guessedWord: false,
+        },
       ],
     });
 
@@ -88,12 +95,21 @@ describe("handleJoinEvent", () => {
     const expected: E.Either<never, WithId<Session>> = E.right({
       id: expect.any(String) as any,
       state: "lobby",
+      messages: [],
       players: [
-        { name: "test-player-2", owner: true, socketId: "test-socket-id-2" },
+        {
+          name: "test-player-2",
+          owner: true,
+          socketId: "test-socket-id-2",
+          score: 0,
+          guessedWord: false,
+        },
         {
           name: params.playerName,
           owner: false,
           socketId: socketMock.id as string,
+          score: 0,
+          guessedWord: false,
         },
       ],
     });
@@ -120,8 +136,15 @@ describe("handleJoinEvent", () => {
 
     sessions.data.set(params.sessionId, {
       state: "lobby",
+      messages: [],
       players: [
-        { name: "test-player-2", owner: true, socketId: "test-socket-id-2" },
+        {
+          name: "test-player-2",
+          owner: true,
+          socketId: "test-socket-id-2",
+          score: 0,
+          guessedWord: false,
+        },
       ],
     });
 

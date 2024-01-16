@@ -15,6 +15,7 @@ describe("performTick", () => {
       timeLeft: 24,
       timerToken: "valid-token",
       word: "beans",
+      messages: [],
       players: [],
     };
 
@@ -33,6 +34,7 @@ describe("performTick", () => {
       timeLeft: 12,
       timerToken: "valid-token",
       players: [],
+      messages: [],
     };
 
     const result = performTick(session)("egg")("valid-token");
@@ -42,6 +44,7 @@ describe("performTick", () => {
       timeLeft: 11,
       timerToken: "valid-token",
       players: [],
+      messages: [],
     });
 
     expect(result).toEqual(expected);
@@ -55,6 +58,7 @@ describe("performTick", () => {
       state: "between",
       timeLeft: 1,
       timerToken: token,
+      messages: [],
       players: [],
     };
 
@@ -66,6 +70,7 @@ describe("performTick", () => {
       timerToken: token,
       word: newWord,
       players: [],
+      messages: [],
     });
 
     expect(result).toEqual(expected);
@@ -79,6 +84,7 @@ describe("performTick", () => {
       state: "round",
       timeLeft: 1,
       word: "beanburrito",
+      messages: [],
       timerToken: token,
       players: [],
     };
@@ -89,6 +95,7 @@ describe("performTick", () => {
       state: "between",
       timeLeft: config.betweenLength,
       timerToken: token,
+      messages: [],
       word: "beanburrito",
       players: [],
     });

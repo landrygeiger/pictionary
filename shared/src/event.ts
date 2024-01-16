@@ -67,15 +67,9 @@ export type MessageEventParams = {
 };
 
 export type MessageEventResponse = E.Either<
-  MutexError | NotFoundError | SessionError,
+  MutexError | NotFoundError | SessionError | ValidationError,
   void
 >;
-
-export type MessageEventBroadcastParams = {
-  message: string;
-  playerName: string;
-  kind: "correct" | "guess";
-};
 
 export const START_EVENT = "start" as const;
 

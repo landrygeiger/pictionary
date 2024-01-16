@@ -10,7 +10,7 @@
   Start Game
 </button>
 <div class="view-container">
-  <app-message-box></app-message-box>
+  <app-message-box [session]="session"></app-message-box>
   <app-canvas></app-canvas>
   <app-player-list [players]="session.players"></app-player-list>
 </div>

@@ -4,17 +4,53 @@ import { promoteFirstPlayer } from "../../src/session";
 describe("promoteFirstPlayer", () => {
   it("promotes first player in normal list", () => {
     const ps: Player[] = [
-      { name: "Test Player 1", socketId: "test-socket-id-1", owner: false },
-      { name: "Test Player 2", socketId: "test-socket-id-2", owner: false },
-      { name: "Test Player 3", socketId: "test-socket-id-3", owner: false },
+      {
+        name: "Test Player 1",
+        socketId: "test-socket-id-1",
+        owner: false,
+        score: 0,
+        guessedWord: false,
+      },
+      {
+        name: "Test Player 2",
+        socketId: "test-socket-id-2",
+        owner: false,
+        score: 0,
+        guessedWord: false,
+      },
+      {
+        name: "Test Player 3",
+        socketId: "test-socket-id-3",
+        owner: false,
+        score: 0,
+        guessedWord: false,
+      },
     ];
 
     const result = promoteFirstPlayer(ps);
 
     const expected: Player[] = [
-      { name: "Test Player 1", socketId: "test-socket-id-1", owner: true },
-      { name: "Test Player 2", socketId: "test-socket-id-2", owner: false },
-      { name: "Test Player 3", socketId: "test-socket-id-3", owner: false },
+      {
+        name: "Test Player 1",
+        socketId: "test-socket-id-1",
+        owner: true,
+        score: 0,
+        guessedWord: false,
+      },
+      {
+        name: "Test Player 2",
+        socketId: "test-socket-id-2",
+        owner: false,
+        score: 0,
+        guessedWord: false,
+      },
+      {
+        name: "Test Player 3",
+        socketId: "test-socket-id-3",
+        owner: false,
+        score: 0,
+        guessedWord: false,
+      },
     ];
 
     expect(result).toEqual(expected);
@@ -22,13 +58,25 @@ describe("promoteFirstPlayer", () => {
 
   it("promotes first player in list of size 1", () => {
     const ps: Player[] = [
-      { name: "Test Player 1", socketId: "test-socket-id-1", owner: false },
+      {
+        name: "Test Player 1",
+        socketId: "test-socket-id-1",
+        owner: false,
+        score: 0,
+        guessedWord: false,
+      },
     ];
 
     const result = promoteFirstPlayer(ps);
 
     const expected: Player[] = [
-      { name: "Test Player 1", socketId: "test-socket-id-1", owner: true },
+      {
+        name: "Test Player 1",
+        socketId: "test-socket-id-1",
+        owner: true,
+        score: 0,
+        guessedWord: false,
+      },
     ];
 
     expect(result).toEqual(expected);

@@ -54,11 +54,14 @@ describe("handleCreateEvent", () => {
 
     const expectedSession: Session = {
       state: "lobby",
+      messages: [],
       players: [
         {
           name: params.ownerName,
           owner: true,
           socketId: socketMock.id as string,
+          score: 0,
+          guessedWord: false,
         },
       ],
     };

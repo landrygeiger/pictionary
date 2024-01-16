@@ -1,13 +1,13 @@
 import {
   AfterViewChecked,
-  AfterViewInit,
   Component,
   ElementRef,
+  Input,
   ViewChild,
 } from "@angular/core";
 import { SocketService } from "../socket.service";
 import { FormsModule } from "@angular/forms";
-import { MessageEventBroadcastParams } from "@pictionary/shared";
+import { Session } from "@pictionary/shared";
 import { CommonModule } from "@angular/common";
 
 @Component({
@@ -17,19 +17,14 @@ import { CommonModule } from "@angular/common";
   templateUrl: "./message-box.component.html",
   styleUrl: "./message-box.component.css",
 })
-export class MessageBoxComponent implements AfterViewInit, AfterViewChecked {
+export class MessageBoxComponent implements AfterViewChecked {
   message = "";
-  messages: MessageEventBroadcastParams[] = [];
+
+  @Input({ required: true }) session!: Session;
 
   @ViewChild("messageContainer") messageContainer!: ElementRef<HTMLDivElement>;
 
   constructor(public socketService: SocketService) {}
-
-  public ngAfterViewInit(): void {
-    this.socketService.messageEventSubject.subscribe(message => {
-      this.messages.push(message);
-    });
-  }
 
   public ngAfterViewChecked(): void {
     this.messageContainer.nativeElement.scrollTop =

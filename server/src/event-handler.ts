@@ -7,8 +7,6 @@ import {
   DrawEventParams,
   JoinEventParams,
   JoinEventResponse,
-  MESSAGE_EVENT,
-  MessageEventBroadcastParams,
   MessageEventParams,
   MessageEventResponse,
   Session,
@@ -62,9 +60,6 @@ export const broadcastDrawEvent =
 
 export const handleDrawEvent = (socket: Socket) => (params: DrawEventParams) =>
   broadcastDrawEvent(socket)(params.sessionId)(params);
-
-export const broadcastMessageEventToAll =
-  broadcastToRoomAndClient<MessageEventBroadcastParams>(MESSAGE_EVENT);
 
 type EventHandler<Params, Response> = (
   socket: Socket,
@@ -168,18 +163,39 @@ export const handleMessageEvent: EventHandler<
   MessageEventResponse
 > = socket => sessionsAPI => params =>
   pipe(
-    sessionsAPI.read(params.sessionId),
-    TE.flatMap(
-      TE.fromEitherK(session => getPlayerBySocketId(session)(socket.id)),
+    TE.Do,
+    TE.bind("sessionId", () =>
+      TE.fromEither(validateSessionId(params.sessionId)),
     ),
-    TE.map(
-      (player): MessageEventBroadcastParams => ({
-        kind: "guess",
-        playerName: player.name,
-        message: params.message,
-      }),
+    TE.bindW("session", () => sessionsAPI.read(params.sessionId)),
+    TE.bindW("player", ({ session }) =>
+      TE.fromEither(getPlayerBySocketId(session)(socket.id)),
     ),
-    TE.map(broadcastMessageEventToAll(socket)(params.sessionId)),
+    TE.let("newTimerToken", () => newTimerToken()),
+    TE.bindW("updatedSession", ({ newTimerToken }) =>
+      sessionsAPI.updateEither(params.sessionId)(
+        reduceSession({
+          kind: "guess",
+          guess: params.message,
+          newTimerToken,
+          socketId: socket.id,
+        }),
+      ),
+    ),
+    TE.tap(({ updatedSession, sessionId, newTimerToken }) =>
+      TE.right(
+        updatedSession.state === "between" &&
+          startSessionTimer(socket)(sessionsAPI)(sessionId)(newTimerToken),
+      ),
+    ),
+    TE.tap(({ updatedSession, sessionId }) =>
+      TE.right(
+        broadcastSessionUpdateToAll(socket)(sessionId)({
+          id: sessionId,
+          ...updatedSession,
+        }),
+      ),
+    ),
     TE.map(constVoid),
   )();
 
