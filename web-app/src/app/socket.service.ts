@@ -35,6 +35,8 @@ export class SocketService {
 
   public drawEventSubject = new Subject<DrawEventParams>();
 
+  public clearCanvasEventSubject = new Subject<void>();
+
   constructor() {
     this.socket.on("connect", this.handleConnectEvent);
     this.socket.on(DRAW_EVENT, this.handleDrawEvent);
@@ -57,6 +59,9 @@ export class SocketService {
   );
 
   private handleUpdateEvent = (session: UpdateEventParams) => {
+    if (this.session?.state !== "round" && session.state === "round") {
+      this.clearCanvasEventSubject.next();
+    }
     this.session = session;
   };
 
