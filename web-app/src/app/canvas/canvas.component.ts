@@ -47,6 +47,10 @@ export class CanvasComponent implements AfterViewInit {
       ),
     );
 
+    this.socketService.clearCanvasEventSubject.subscribe(() =>
+      this.context?.clearRect(0, 0, this.width, this.height),
+    );
+
     fromEvent<MouseEvent>(canvasEl, "mousedown")
       .pipe(
         switchMap(() =>
